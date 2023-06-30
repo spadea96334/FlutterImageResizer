@@ -1,6 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/rendering.dart';
+import 'page/image_options_page.dart';
+import 'page/image_page.dart';
 
 void main() {
+  debugPaintSizeEnabled = false;
+  // debugPaintSizeEnabled = true;
   runApp(const MyApp());
 }
 
@@ -13,8 +18,8 @@ class MyApp extends StatelessWidget {
     return FluentApp(
       title: 'Image resizer',
       theme: FluentThemeData(
-        visualDensity: VisualDensity.standard,
-      ),
+          // visualDensity: VisualDensity.standard,
+          ),
       home: const MyHomePage(title: 'Image resizer'),
     );
   }
@@ -43,26 +48,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
     return NavigationView(
-        appBar: const NavigationAppBar(title: Text("Fluent Design App Bar")),
         pane: NavigationPane(
             selected: topIndex,
             onChanged: (index) => setState(() => topIndex = index),
             displayMode: PaneDisplayMode.open,
             size: const NavigationPaneSize(openMaxWidth: 150),
             items: [
-              PaneItem(
-                  icon: const Icon(FluentIcons.picture), title: const Text('image'), body: const Text('image page')),
-              PaneItem(
-                  icon: const Icon(FluentIcons.settings),
-                  title: const Text('settings'),
-                  body: const Text('settings page'))
-            ]));
+          PaneItem(icon: const Icon(FluentIcons.picture), title: const Text('Image'), body: const ImagePage()),
+          PaneItem(
+              icon: const Icon(FluentIcons.column_options),
+              title: const Text('Image options'),
+              body: const ImageOptionsPage()),
+          PaneItem(
+              icon: const Icon(FluentIcons.settings), title: const Text('Settings'), body: const Text('settings page'))
+        ]));
   }
 }
