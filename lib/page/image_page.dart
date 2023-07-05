@@ -2,7 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:cross_file/cross_file.dart';
-import '../image_resizer.dart';
+import 'package:image_resizer/widget/progress_dialog.dart';
+import '../resizer/image_resizer.dart';
 
 class ImagePage extends StatefulWidget {
   const ImagePage({super.key});
@@ -45,8 +46,32 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
                       child: ListView.separated(
                           itemBuilder: (context, index) => buildList(context, index),
                           separatorBuilder: (context, index) => buildSeparator(context, index),
-                          itemCount: imageResizer.fileList.length))))
+                          itemCount: imageResizer.fileList.length)))),
+          Row(children: [
+            Text('Total : ${imageResizer.fileList.length}'),
+            const Expanded(child: SizedBox()),
+            Padding(
+                padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5),
+                child: TextButton(
+                    onPressed: resizeButtonPressed,
+                    style: const ButtonStyle(
+                        foregroundColor: MaterialStatePropertyAll(Colors.black87),
+                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.black45),
+                            borderRadius: BorderRadius.all(Radius.circular(15))))),
+                    child: const Text('go')))
+          ])
         ]));
+  }
+
+  void resizeButtonPressed() {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ProgressDialog(context, imageResizer);
+        });
+    imageResizer.resize();
   }
 
   void clearButtonPressed() {
@@ -58,7 +83,7 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
     return Container(
         height: 20,
         padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-        child: Text(imageResizer.fileList[index],
+        child: Text(imageResizer.fileList[index].path,
             maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10)));
   }
 
@@ -71,10 +96,24 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
       print(xfile.path);
       FileSystemEntityType type = FileSystemEntity.typeSync(xfile.path);
       if (type == FileSystemEntityType.file) {
-        imageResizer.fileList.add(xfile.path);
-      } else if (type == FileSystemEntityType.directory) {}
+        imageResizer.fileList.add(File(xfile.path));
+      } else if (type == FileSystemEntityType.directory) {
+        getDictionaryFile(xfile.path);
+      }
       setState(() {});
-      print(type.toString());
+    }
+  }
+
+  void getDictionaryFile(String path) {
+    Directory directory = Directory(path);
+    List<FileSystemEntity> entities = directory.listSync(recursive: true);
+    for (FileSystemEntity entity in entities) {
+      FileSystemEntityType type = FileSystemEntity.typeSync(entity.path);
+      if (type == FileSystemEntityType.file) {
+        imageResizer.fileList.add(File(entity.path));
+      } else if (type == FileSystemEntityType.directory) {
+        getDictionaryFile(entity.path);
+      }
     }
   }
 
