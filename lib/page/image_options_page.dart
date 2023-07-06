@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:image/image.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
 import '../widget/options_input_widget.dart';
@@ -44,7 +43,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 items: formatItems,
                 dropdownColor: Colors.grey[100],
                 focusColor: Colors.grey[100],
-                onChanged: (value) => formatChange(value))
+                onChanged: (value) {
+                  imageResizer.config.imageFormat = value as ImageFormat;
+                  setState(() {});
+                })
           ]),
           Row(children: [
             const SizedBox(width: 10),
@@ -55,7 +57,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 items: filterItems,
                 dropdownColor: Colors.grey[100],
                 focusColor: Colors.grey[100],
-                onChanged: (value) => filterChange(value))
+                onChanged: (value) {
+                  imageResizer.config.filter = value as Interpolation;
+                  setState(() {});
+                })
           ]),
           OptionInputWidget(
               title: 'Width',
@@ -74,18 +79,35 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 imageResizer.config.height = int.parse(value);
+              }),
+          OptionInputWidget(
+              title: 'jpg quality:',
+              unitLabel: '%',
+              initValue: imageResizer.config.jpgQuality.toString(),
+              allowPattern: RegExp('[0-9]'),
+              onChanged: (value) {
+                value = value.isEmpty ? '0' : value;
+                if (int.parse(value) > 100) {
+                  value = '100';
+                  setState(() {});
+                }
+
+                imageResizer.config.jpgQuality = int.parse(value);
+              }),
+          OptionInputWidget(
+              title: 'Png compression',
+              unitLabel: '',
+              initValue: imageResizer.config.pngCompression.toString(),
+              allowPattern: RegExp('[0-9]'),
+              onChanged: (value) {
+                value = value.isEmpty ? '0' : value;
+                if (int.parse(value) > 9) {
+                  value = '9';
+                  setState(() {});
+                }
+                imageResizer.config.pngCompression = int.parse(value);
               })
         ]));
-  }
-
-  void formatChange(Object value) {
-    imageResizer.config.imageFormat = value as ImageFormat;
-    setState(() {});
-  }
-
-  void filterChange(Object value) {
-    imageResizer.config.filter = value as Interpolation;
-    setState(() {});
   }
 
   @override

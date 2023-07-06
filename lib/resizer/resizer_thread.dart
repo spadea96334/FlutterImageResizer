@@ -1,8 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:typed_data';
-import 'package:image/image.dart';
+import 'package:image_resizer/opencv_bridge.dart';
 import 'package:path/path.dart' as p;
 
 import '../model/image_resize_config.dart';
@@ -54,34 +53,6 @@ class ResizerThread {
   }
 
   static Future<bool> resizeImage(File file) async {
-    Image? image = decodeImage(file.readAsBytesSync());
-    if (image == null) {
-      return false;
-    }
-
-    Image resizedImage = copyResize(image, height: config.height, width: config.width, interpolation: config.filter);
-    Uint8List? encodedImage;
-    switch (config.imageFormat) {
-      case ImageFormat.origin:
-        encodedImage = encodeNamedImage(file.path, resizedImage);
-        break;
-      case ImageFormat.jpg:
-        encodedImage = encodeJpg(image);
-        break;
-      case ImageFormat.png:
-        encodedImage = encodePng(image);
-        break;
-      case ImageFormat.bmp:
-        encodedImage = encodeBmp(image);
-        break;
-      default:
-        assert(false);
-    }
-
-    if (encodedImage == null) {
-      return false;
-    }
-
     String filename = p.basename(file.path);
     String baseName = p.basenameWithoutExtension(file.path);
     String newPath = '';
@@ -91,12 +62,6 @@ class ResizerThread {
       newPath = p.join('/Users/ken/Documents/test', baseName, '.', config.imageFormat.extension);
     }
 
-    File newFile = File(newPath);
-    if (!newFile.existsSync()) {
-      newFile.createSync(recursive: true);
-    }
-
-    newFile.writeAsBytesSync(encodedImage.toList());
-    return true;
+    return OpenCVBridge().reiszeImage(file.path, newPath, config.width, config.height, 0.9, 0.9, config.filter.value);
   }
 }
