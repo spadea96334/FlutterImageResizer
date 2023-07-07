@@ -1,28 +1,27 @@
 #include "OpenCVBridge.h"
+
 #include <opencv.hpp>
 
-bool resizeImage(char *path, char *dst, int width, int height, double scaleX, double scaleY, int interpolation)
-{
-    cv::Mat image = cv::imread(path, cv::IMREAD_UNCHANGED);
+bool resizeImage(Config *config) {
+  cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);
 
-    if (image.data == NULL) {
-        return false;
-    }
+  if (image.data == NULL) {
+    return false;
+  }
 
-    cv::Mat resizedImage;
+  cv::Mat resizedImage;
 
-    cv::Size size;
+  cv::Size size;
 
-    if (width != 0 || height != 0) {
-        size.width = width;
-        size.height = height;
-    }
+  if (config->width != 0 || config->height != 0) {
+    size.width = config->width;
+    size.height = config->height;
+  }
 
-    cv::resize(image, resizedImage, size, scaleX, scaleY, cv::INTER_CUBIC);
+  cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, cv::INTER_CUBIC);
+  std::vector<int> compression_params;
 
-    std::vector<int> compression_params;
+  cv::imwrite(config->dst, resizedImage, compression_params);
 
-    cv::imwrite(dst, resizedImage, compression_params);
-
-    return true;
+  return true;
 }

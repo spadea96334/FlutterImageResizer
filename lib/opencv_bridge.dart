@@ -1,8 +1,9 @@
 import 'dart:ffi';
-import 'package:ffi/ffi.dart';
 
-typedef ResizeImageNative = Bool Function(Pointer<Utf8>, Pointer<Utf8>, Int, Int, Double, Double, Int);
-typedef ResizeImageDart = bool Function(Pointer<Utf8>, Pointer<Utf8>, int, int, double, double, int);
+import 'model/image_resize_config.dart';
+
+typedef ResizeImageNative = Bool Function(Pointer<ImageResizeConfigC>);
+typedef ResizeImageDart = bool Function(Pointer<ImageResizeConfigC>);
 
 class OpenCVBridge {
   static final OpenCVBridge _singleton = OpenCVBridge._private();
@@ -18,7 +19,7 @@ class OpenCVBridge {
     return _singleton;
   }
 
-  bool reiszeImage(String path, String dst, int width, int heigth, double scaleX, double scaleY, int interpolation) {
-    return _resizeImageDart(path.toNativeUtf8(), dst.toNativeUtf8(), width, heigth, scaleX, scaleY, interpolation);
+  bool reiszeImage(Pointer<ImageResizeConfigC> config) {
+    return _resizeImageDart(config);
   }
 }

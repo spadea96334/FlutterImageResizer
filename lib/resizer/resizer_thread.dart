@@ -62,6 +62,6 @@ class ResizerThread {
       newPath = p.join('/Users/ken/Documents/test', baseName, '.', config.imageFormat.extension);
     }
 
-    return OpenCVBridge().reiszeImage(file.path, newPath, config.width, config.height, 0.9, 0.9, config.filter.value);
+    return OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath));
   }
 }
