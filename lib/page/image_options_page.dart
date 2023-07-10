@@ -1,3 +1,4 @@
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
@@ -106,8 +107,28 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                   setState(() {});
                 }
                 imageResizer.config.pngCompression = int.parse(value);
+              }),
+          OptionInputWidget(
+              title: 'File Destination',
+              unitLabel: '',
+              initValue: imageResizer.config.destination,
+              icon: const Icon(Icons.folder_open),
+              textFieldWidth: 300,
+              iconButtonOnPressed: iconButtonOnPressed,
+              onChanged: (value) {
+                imageResizer.config.destination = value;
               })
         ]));
+  }
+
+  Future<void> iconButtonOnPressed() async {
+    String? result = await getDirectoryPath();
+    if (result == null) {
+      return;
+    }
+
+    imageResizer.config.destination = result;
+    setState(() {});
   }
 
   @override

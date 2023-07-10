@@ -26,6 +26,7 @@ enum Interpolation {
 }
 
 class ImageResizeConfig {
+  String destination = '';
   int height = 0;
   int width = 0;
   ImageFormat imageFormat = ImageFormat.origin;

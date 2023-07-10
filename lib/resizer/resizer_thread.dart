@@ -16,7 +16,8 @@ class ResizerThread {
   ResizerThread();
 
   Future<void> initIsolate() async {
-    isolate = await Isolate.spawn(initCommunication, receivePort.sendPort);
+    // Because isolate memery is indepedent, must copy config when init.
+    isolate = await Isolate.spawn(initCommunication, [receivePort.sendPort, config]);
     Completer initCompleter = Completer();
     receivePort.listen((message) {
       if (message is SendPort) {
@@ -42,11 +43,20 @@ class ResizerThread {
     return completer!.future;
   }
 
-  static void initCommunication(SendPort sendPort) {
+  static void initCommunication(List args) {
+    assert(args[0] is SendPort);
+    assert(args[1] is ImageResizeConfig);
     ReceivePort receivePort = ReceivePort();
+    SendPort sendPort = args[0];
+    config = args[1];
     sendPort.send(receivePort.sendPort);
 
     receivePort.listen((message) async {
+      if (message is ImageResizeConfig) {
+        config = message;
+        return;
+      }
+
       bool result = await resizeImage(message);
       sendPort.send(result);
     });
@@ -56,12 +66,13 @@ class ResizerThread {
     String filename = p.basename(file.path);
     String baseName = p.basenameWithoutExtension(file.path);
     String newPath = '';
+    print('dst: ${config.destination}');
     if (config.imageFormat == ImageFormat.origin) {
-      newPath = p.join('/Users/ken/Documents/test', filename);
+      newPath = p.join(config.destination, filename);
     } else {
-      newPath = p.join('/Users/ken/Documents/test', baseName, '.', config.imageFormat.extension);
+      newPath = p.join(config.destination, baseName, '.', config.imageFormat.extension);
     }
-
+    print('dst2: $newPath');
     return OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath));
   }
 }

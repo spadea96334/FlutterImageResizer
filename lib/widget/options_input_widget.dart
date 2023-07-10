@@ -2,13 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class OptionInputWidget extends StatelessWidget {
-  const OptionInputWidget({
+  OptionInputWidget({
     super.key,
     required this.title,
     this.unitLabel,
-    required this.onChanged,
+    this.onChanged,
     this.allowPattern,
     this.initValue,
+    this.icon,
+    this.textFieldWidth = 100,
+    this.iconButtonOnPressed,
   });
 
   final String title;
@@ -16,6 +19,11 @@ class OptionInputWidget extends StatelessWidget {
   final String? initValue;
   final Function(String value)? onChanged;
   final Pattern? allowPattern;
+  final Icon? icon;
+  final TextEditingController _textEditingController = TextEditingController();
+  final double textFieldWidth;
+  final Function()? iconButtonOnPressed;
+  String get text => getTextFieldValue();
 
   @override
   Widget build(BuildContext context) {
@@ -25,29 +33,37 @@ class OptionInputWidget extends StatelessWidget {
       inputFormatters.add(FilteringTextInputFormatter.allow(RegExp('[0-9]+')));
     }
 
-    TextEditingController textEditingController = TextEditingController();
-
     TextField textField = TextField(
-        controller: textEditingController,
+        controller: _textEditingController,
         decoration: const InputDecoration(isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 6)),
         inputFormatters: inputFormatters,
-        onChanged: (value) {
-          if (onChanged != null) {
-            onChanged!(value);
-          }
-        });
-
+        onChanged: onChanged);
     if (initValue != null) {
-      textEditingController.text = initValue!;
+      _textEditingController.text = initValue!;
+    }
+
+    IconButton? iconButton;
+    if (icon != null) {
+      iconButton = IconButton(
+          onPressed: iconButtonOnPressed,
+          icon: icon!,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          hoverColor: Colors.transparent);
     }
 
     return Row(children: [
       const SizedBox(width: 10),
       Text('$title :'),
       const SizedBox(width: 5),
-      SizedBox(width: 100, child: textField),
+      SizedBox(width: textFieldWidth, child: textField),
       const SizedBox(width: 2),
-      Text(unitLabel ?? '')
+      Text(unitLabel ?? ''),
+      iconButton ?? const SizedBox()
     ]);
+  }
+
+  String getTextFieldValue() {
+    return _textEditingController.text;
   }
 }

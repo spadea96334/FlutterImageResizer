@@ -27,6 +27,11 @@ class ImageResizer with ChangeNotifier {
       availableThreads.add(thread);
     }
 
+    Directory dst = Directory(config.destination);
+    if (!dst.existsSync()) {
+      dst.createSync(recursive: true);
+    }
+
     await Future.wait(threadFutures);
     print('init successed');
   }
