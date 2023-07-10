@@ -1,5 +1,11 @@
 #include "stdio.h"
+
+#ifdef _WIN32
+#define EXPORT __declspec(dllexport)
+extern "C" {
+#else
 #define EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
+#endif
 
 struct Config {
   char *file;
@@ -15,3 +21,6 @@ struct Config {
 
 // EXPORT bool resizeImage(char *path, char *dst, int width, int height, double scaleX, double scaleY, int interpolation);
 EXPORT bool resizeImage(Config *config);
+#ifdef _WIN32
+}
+#endif

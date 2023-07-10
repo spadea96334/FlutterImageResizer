@@ -1,6 +1,6 @@
 #include "OpenCVBridge.h"
 
-#include <opencv.hpp>
+#include <opencv2/opencv.hpp>
 
 bool resizeImage(Config *config) {
   cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);

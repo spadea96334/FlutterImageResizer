@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:io';
 
 import 'model/image_resize_config.dart';
 
@@ -11,8 +12,15 @@ class OpenCVBridge {
   late ResizeImageDart _resizeImageDart;
 
   OpenCVBridge._private() {
-    var lib = DynamicLibrary.process();
-    _resizeImageDart = lib.lookupFunction<ResizeImageNative, ResizeImageDart>('resizeImage');
+    DynamicLibrary? lib;
+    if (Platform.isMacOS) {
+      lib = DynamicLibrary.process();
+    } else if (Platform.isWindows) {
+      lib = DynamicLibrary.open('native_library.dll');
+    }
+
+    // TODO: show tips
+    _resizeImageDart = lib!.lookupFunction<ResizeImageNative, ResizeImageDart>('resizeImage');
   }
 
   factory OpenCVBridge() {
