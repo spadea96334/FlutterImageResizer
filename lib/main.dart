@@ -5,6 +5,7 @@ import 'page/image_page.dart';
 import 'page/image_settings_page.dart';
 
 void main() {
+  // load opencv library
   OpenCVBridge();
   runApp(const MyApp());
 }
