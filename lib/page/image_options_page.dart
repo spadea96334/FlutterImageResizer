@@ -37,7 +37,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
           ]),
           Row(children: [
             const SizedBox(width: 10),
-            const Text('format:'),
+            const Text('Format:'),
             const SizedBox(width: 5),
             DropdownButton(
                 value: imageResizer.config.imageFormat,
@@ -82,7 +82,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 imageResizer.config.height = int.parse(value);
               }),
           OptionInputWidget(
-              title: 'jpg quality:',
+              title: 'Jpg quality',
               unitLabel: '%',
               initValue: imageResizer.config.jpgQuality.toString(),
               allowPattern: RegExp('[0-9]'),

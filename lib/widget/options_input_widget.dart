@@ -52,15 +52,17 @@ class OptionInputWidget extends StatelessWidget {
           hoverColor: Colors.transparent);
     }
 
-    return Row(children: [
-      const SizedBox(width: 10),
-      Text('$title :'),
-      const SizedBox(width: 5),
-      SizedBox(width: textFieldWidth, child: textField),
-      const SizedBox(width: 2),
-      Text(unitLabel ?? ''),
-      iconButton ?? const SizedBox()
-    ]);
+    return ConstrainedBox(
+        constraints: const BoxConstraints(minHeight: 48),
+        child: Row(children: [
+          const SizedBox(width: 10),
+          Text('$title :'),
+          const SizedBox(width: 5),
+          SizedBox(width: textFieldWidth, child: textField),
+          const SizedBox(width: 2),
+          Text(unitLabel ?? ''),
+          iconButton ?? const SizedBox()
+        ]));
   }
 
   String getTextFieldValue() {
