@@ -27,14 +27,16 @@ class ImageResizer with ChangeNotifier {
       availableThreads.add(thread);
     }
 
+    await Future.wait(threadFutures);
+    print('init successed');
+  }
+
+  void checkDestinationPath() {
     // TODO: show error when dst is empty
     Directory dst = Directory(config.destination);
     if (!dst.existsSync()) {
       dst.createSync(recursive: true);
     }
-
-    await Future.wait(threadFutures);
-    print('init successed');
   }
 
   factory ImageResizer() {
@@ -49,6 +51,7 @@ class ImageResizer with ChangeNotifier {
     processing = true;
     processCount = 0;
     await initThread(threadCount);
+    checkDestinationPath();
 
     for (int i = 0; i < fileList.length; i++) {
       File file = fileList[i];
