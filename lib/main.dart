@@ -1,12 +1,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:image_resizer/opencv_bridge.dart';
+import 'package:image_resizer/utility/profile_manager.dart';
 import 'page/image_options_page.dart';
 import 'page/image_page.dart';
 import 'page/image_settings_page.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
   // load opencv library
   OpenCVBridge();
+  // load profile
+  await ProfileManager().loadProfile();
   runApp(const MyApp());
 }
 

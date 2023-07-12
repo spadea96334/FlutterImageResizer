@@ -1,6 +1,9 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:json_annotation/json_annotation.dart';
+
+part 'image_resize_config.g.dart';
 
 enum ImageFormat {
   jpg('jpg'),
@@ -25,7 +28,19 @@ enum Interpolation {
   final int value;
 }
 
+@JsonSerializable(explicitToJson: true)
+class ImageResizeProfiles {
+  List<ImageResizeConfig> profiles = [];
+
+  ImageResizeProfiles();
+
+  factory ImageResizeProfiles.fromJson(Map<String, dynamic> json) => _$ImageResizeProfilesFromJson(json);
+  Map<String, dynamic> toJson() => _$ImageResizeProfilesToJson(this);
+}
+
+@JsonSerializable()
 class ImageResizeConfig {
+  String name = '';
   String destination = '';
   int height = 0;
   int width = 0;
@@ -33,6 +48,8 @@ class ImageResizeConfig {
   Interpolation filter = Interpolation.area;
   int jpgQuality = 95;
   int pngCompression = 1;
+
+  ImageResizeConfig();
 
   Pointer<ImageResizeConfigC> toNativeStruct(String file, String dst) {
     Pointer<ImageResizeConfigC> struct = calloc<ImageResizeConfigC>();
@@ -48,6 +65,9 @@ class ImageResizeConfig {
 
     return struct;
   }
+
+  factory ImageResizeConfig.fromJson(Map<String, dynamic> json) => _$ImageResizeConfigFromJson(json);
+  Map<String, dynamic> toJson() => _$ImageResizeConfigToJson(this);
 }
 
 class ImageResizeConfigC extends Struct {

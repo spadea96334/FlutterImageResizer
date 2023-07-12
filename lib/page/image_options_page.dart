@@ -1,5 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
+import 'package:image_resizer/utility/profile_manager.dart';
+import 'package:image_resizer/widget/tooltip_button.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
 import '../widget/options_input_widget.dart';
@@ -13,10 +15,22 @@ class ImageOptionsPage extends StatefulWidget {
 
 class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepAliveClientMixin {
   final ImageResizer imageResizer = ImageResizer();
+  final ProfileManager profileManager = ProfileManager();
+
+  @override
+  void initState() {
+    super.initState();
+    imageResizer.config = profileManager.profiles.first;
+  }
 
   @override
   Widget build(BuildContext context) {
     super.build(context);
+
+    List<DropdownMenuItem> profileItems = [];
+    for (var element in profileManager.profiles) {
+      profileItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
 
     List<DropdownMenuItem> formatItems = [];
     for (var element in ImageFormat.values) {
@@ -34,6 +48,22 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
           Row(children: [
             Expanded(
                 child: Container(padding: const EdgeInsets.fromLTRB(4, 4, 4, 4), child: const Text('Image options')))
+          ]),
+          Row(children: [
+            const SizedBox(width: 10),
+            const Text('Profile:'),
+            const SizedBox(width: 5),
+            DropdownButton(
+                value: imageResizer.config,
+                items: profileItems,
+                dropdownColor: Colors.grey[100],
+                focusColor: Colors.grey[100],
+                onChanged: (value) {
+                  setState(() {});
+                }),
+            TooltipButton(icon: const Icon(Icons.add), message: 'add', onPressed: addProfile),
+            TooltipButton(icon: const Icon(Icons.save_as), message: 'save', onPressed: saveProfile),
+            TooltipButton(icon: const Icon(Icons.delete_forever), message: 'delete', onPressed: deleteProfile)
           ]),
           Row(children: [
             const SizedBox(width: 10),
@@ -129,6 +159,18 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
 
     imageResizer.config.destination = result;
     setState(() {});
+  }
+
+  void addProfile() {
+    // TODO: add profile
+  }
+
+  void saveProfile() {
+    profileManager.saveProfile();
+  }
+
+  void deleteProfile() {
+    // TODO: delete profile
   }
 
   @override
