@@ -3,6 +3,13 @@ import 'dart:convert';
 import 'package:image_resizer/model/image_resize_config.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+enum SettingKey {
+  threads('threads');
+
+  const SettingKey(this.name);
+  final String name;
+}
+
 class ProfileManager {
   static final ProfileManager _singleton = ProfileManager._private();
   List<ImageResizeConfig> profiles = [];
@@ -37,6 +44,17 @@ class ProfileManager {
     ImageResizeConfig config = ImageResizeConfig();
     config.name = 'default';
     profiles.add(config);
+  }
+
+  Future<void> setSetting(SettingKey key, String value) async {
+    _prefs ??= await SharedPreferences.getInstance();
+    await _prefs!.setString(key.name, value);
+  }
+
+  Future<String?> getSetting(SettingKey key) async {
+    _prefs ??= await SharedPreferences.getInstance();
+    String? value = _prefs!.getString(key.name);
+    return value;
   }
 
   factory ProfileManager() {

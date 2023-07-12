@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:image_resizer/utility/profile_manager.dart';
 import '../model/image_resize_config.dart';
 import 'resizer_thread.dart';
 
@@ -14,7 +15,19 @@ class ImageResizer with ChangeNotifier {
   bool processing = false;
   int threadCount = Platform.numberOfProcessors;
 
-  ImageResizer._private();
+  ImageResizer._private() {
+    ProfileManager().getSetting(SettingKey.threads).then((value) {
+      if (value == null) {
+        return;
+      }
+
+      try {
+        threadCount = int.parse(value);
+      } catch (e) {
+        return;
+      }
+    });
+  }
 
   Future<void> initThread(int count) async {
     ResizerThread.config = config;
