@@ -66,6 +66,13 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
   }
 
   void resizeButtonPressed() {
+    if (imageResizer.config.height == 0 || imageResizer.config.width == 0) {
+      if (imageResizer.config.scaleX == 0 || imageResizer.config.scaleY == 0) {
+        print('error size');
+        // TODO: show error toast
+        return;
+      }
+    }
     showDialog(
         context: context,
         builder: (context) {

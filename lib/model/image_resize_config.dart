@@ -48,20 +48,28 @@ class ImageResizeConfig {
   Interpolation filter = Interpolation.area;
   int jpgQuality = 95;
   int pngCompression = 1;
+  int scaleX = 0;
+  int scaleY = 0;
 
   ImageResizeConfig();
 
   Pointer<ImageResizeConfigC> toNativeStruct(String file, String dst) {
     Pointer<ImageResizeConfigC> struct = calloc<ImageResizeConfigC>();
-    struct.ref.height = height;
-    struct.ref.width = width;
+    if (scaleX != 0 || scaleY != 0) {
+      struct.ref.height = 0;
+      struct.ref.width = 0;
+    } else {
+      struct.ref.height = height;
+      struct.ref.width = width;
+    }
+
     struct.ref.filter = filter.value;
     struct.ref.jpgQuality = jpgQuality;
     struct.ref.pngCompression = pngCompression;
     struct.ref.file = file.toNativeUtf8();
     struct.ref.dst = dst.toNativeUtf8();
-    struct.ref.scaleX = 0.9;
-    struct.ref.scaleY = 0.9;
+    struct.ref.scaleX = scaleX / 100;
+    struct.ref.scaleY = scaleY / 100;
 
     return struct;
   }

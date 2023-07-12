@@ -111,6 +111,29 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 value = value.isEmpty ? '0' : value;
                 imageResizer.config.height = int.parse(value);
               }),
+          Tooltip(
+            message: 'If value of precentage is not 0, pixel value will be invaild',
+            child: OptionInputWidget(
+                title: 'Width',
+                unitLabel: '%',
+                initValue: imageResizer.config.scaleX.toString(),
+                allowPattern: RegExp('[0-9]+'),
+                onChanged: (value) {
+                  value = value.isEmpty ? '0' : value;
+                  imageResizer.config.scaleX = int.parse(value);
+                }),
+          ),
+          Tooltip(
+              message: 'If value of precentage is not 0, the value of pixel will be invaild',
+              child: OptionInputWidget(
+                  title: 'Height',
+                  unitLabel: '%',
+                  initValue: imageResizer.config.scaleY.toString(),
+                  allowPattern: RegExp('[0-9]+'),
+                  onChanged: (value) {
+                    value = value.isEmpty ? '0' : value;
+                    imageResizer.config.scaleY = int.parse(value);
+                  })),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',

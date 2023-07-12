@@ -27,7 +27,9 @@ ImageResizeConfig _$ImageResizeConfigFromJson(Map<String, dynamic> json) =>
       ..imageFormat = $enumDecode(_$ImageFormatEnumMap, json['imageFormat'])
       ..filter = $enumDecode(_$InterpolationEnumMap, json['filter'])
       ..jpgQuality = json['jpgQuality'] as int
-      ..pngCompression = json['pngCompression'] as int;
+      ..pngCompression = json['pngCompression'] as int
+      ..scaleX = json['scaleX'] as int
+      ..scaleY = json['scaleY'] as int;
 
 Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
     <String, dynamic>{
@@ -39,6 +41,8 @@ Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
       'filter': _$InterpolationEnumMap[instance.filter]!,
       'jpgQuality': instance.jpgQuality,
       'pngCompression': instance.pngCompression,
+      'scaleX': instance.scaleX,
+      'scaleY': instance.scaleY,
     };
 
 const _$ImageFormatEnumMap = {
