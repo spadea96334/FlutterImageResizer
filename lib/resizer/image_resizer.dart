@@ -27,6 +27,7 @@ class ImageResizer with ChangeNotifier {
       availableThreads.add(thread);
     }
 
+    // TODO: show error when dst is empty
     Directory dst = Directory(config.destination);
     if (!dst.existsSync()) {
       dst.createSync(recursive: true);
