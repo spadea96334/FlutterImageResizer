@@ -19,7 +19,11 @@ class ProfileManager {
     }
 
     Map<String, dynamic> json = jsonDecode(jsonString);
-    profiles = ImageResizeProfiles.fromJson(json).profiles;
+    try {
+      profiles = ImageResizeProfiles.fromJson(json).profiles;
+    } catch (error) {
+      createDefaultProfile();
+    }
   }
 
   Future<void> saveProfile() async {
