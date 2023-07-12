@@ -13,12 +13,12 @@ bool resizeImage(Config *config) {
 
   cv::Size size;
 
-  if (config->width != 0 || config->height != 0) {
+  if (config->width != 0 && config->height != 0) {
     size.width = config->width;
     size.height = config->height;
   }
 
-  cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, cv::INTER_CUBIC);
+  cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, config->filter);
   std::vector<int> compression_params;
 
   cv::imwrite(config->dst, resizedImage, compression_params);
