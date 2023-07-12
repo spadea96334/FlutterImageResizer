@@ -98,6 +98,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               unitLabel: 'pixels',
               initValue: imageResizer.config.width.toString(),
               allowPattern: RegExp('[0-9]+'),
+              hintText: '0',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 imageResizer.config.width = int.parse(value);
@@ -107,6 +108,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               unitLabel: 'pixels',
               initValue: imageResizer.config.height.toString(),
               allowPattern: RegExp('[0-9]+'),
+              hintText: '0',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 imageResizer.config.height = int.parse(value);
@@ -118,6 +120,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 unitLabel: '%',
                 initValue: imageResizer.config.scaleX.toString(),
                 allowPattern: RegExp('[0-9]+'),
+                hintText: '100',
                 onChanged: (value) {
                   value = value.isEmpty ? '0' : value;
                   imageResizer.config.scaleX = int.parse(value);
@@ -130,6 +133,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                   unitLabel: '%',
                   initValue: imageResizer.config.scaleY.toString(),
                   allowPattern: RegExp('[0-9]+'),
+                  hintText: '100',
                   onChanged: (value) {
                     value = value.isEmpty ? '0' : value;
                     imageResizer.config.scaleY = int.parse(value);
@@ -139,6 +143,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               unitLabel: '%',
               initValue: imageResizer.config.jpgQuality.toString(),
               allowPattern: RegExp('[0-9]'),
+              hintText: '95(0~100)',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 if (int.parse(value) > 100) {
@@ -153,6 +158,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               unitLabel: '',
               initValue: imageResizer.config.pngCompression.toString(),
               allowPattern: RegExp('[0-9]'),
+              hintText: '1(0~9)',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 if (int.parse(value) > 9) {

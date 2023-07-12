@@ -12,11 +12,13 @@ class OptionInputWidget extends StatelessWidget {
     this.icon,
     this.textFieldWidth = 100,
     this.iconButtonOnPressed,
+    this.hintText,
   });
 
   final String title;
   final String? unitLabel;
   final String? initValue;
+  final String? hintText;
   final Function(String value)? onChanged;
   final Pattern? allowPattern;
   final Icon? icon;
@@ -35,9 +37,11 @@ class OptionInputWidget extends StatelessWidget {
 
     TextField textField = TextField(
         controller: _textEditingController,
-        decoration: const InputDecoration(isDense: true, contentPadding: EdgeInsets.symmetric(vertical: 6)),
+        decoration:
+            InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(vertical: 6), hintText: hintText),
         inputFormatters: inputFormatters,
         onChanged: onChanged);
+
     if (initValue != null) {
       _textEditingController.text = initValue!;
     }
