@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:image_resizer/utility/profile_manager.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_resize_config.g.dart';
@@ -48,10 +49,12 @@ class ImageResizeConfig {
   Interpolation filter = Interpolation.area;
   int jpgQuality = 95;
   int pngCompression = 1;
-  int scaleX = 0;
-  int scaleY = 0;
+  int scaleX = 100;
+  int scaleY = 100;
 
-  ImageResizeConfig();
+  ImageResizeConfig() {
+    destination = ProfileManager().documentsPath;
+  }
 
   Pointer<ImageResizeConfigC> toNativeStruct(String file, String dst) {
     Pointer<ImageResizeConfigC> struct = calloc<ImageResizeConfigC>();

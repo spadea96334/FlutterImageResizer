@@ -1,6 +1,8 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:image_resizer/model/image_resize_config.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 enum SettingKey {
@@ -14,11 +16,14 @@ class ProfileManager {
   static final ProfileManager _singleton = ProfileManager._private();
   List<ImageResizeConfig> profiles = [];
   SharedPreferences? _prefs;
+  String documentsPath = '';
 
   ProfileManager._private();
 
   Future<void> loadProfile() async {
     _prefs ??= await SharedPreferences.getInstance();
+    Directory directory = await getApplicationDocumentsDirectory();
+    documentsPath = directory.path;
     String? jsonString = _prefs!.get('profiles') as String?;
     if (jsonString == null) {
       createDefaultProfile();

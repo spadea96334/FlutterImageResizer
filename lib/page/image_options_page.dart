@@ -122,7 +122,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '100',
                 onChanged: (value) {
-                  value = value.isEmpty ? '0' : value;
+                  value = value.isEmpty ? '100' : value;
                   imageResizer.config.scaleX = int.parse(value);
                 }),
           ),
@@ -135,7 +135,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
                   allowPattern: RegExp('[0-9]+'),
                   hintText: '100',
                   onChanged: (value) {
-                    value = value.isEmpty ? '0' : value;
+                    value = value.isEmpty ? '100' : value;
                     imageResizer.config.scaleY = int.parse(value);
                   })),
           OptionInputWidget(
@@ -145,7 +145,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               allowPattern: RegExp('[0-9]'),
               hintText: '95(0~100)',
               onChanged: (value) {
-                value = value.isEmpty ? '0' : value;
+                value = value.isEmpty ? '95' : value;
                 if (int.parse(value) > 100) {
                   value = '100';
                   setState(() {});
@@ -160,7 +160,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
               allowPattern: RegExp('[0-9]'),
               hintText: '1(0~9)',
               onChanged: (value) {
-                value = value.isEmpty ? '0' : value;
+                value = value.isEmpty ? '1' : value;
                 if (int.parse(value) > 9) {
                   value = '9';
                   setState(() {});
