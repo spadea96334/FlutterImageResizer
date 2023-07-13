@@ -76,7 +76,7 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
     showDialog(
         context: context,
         builder: (context) {
-          return ProgressDialog(context, imageResizer);
+          return ProgressDialog();
         });
     imageResizer.resize();
   }
