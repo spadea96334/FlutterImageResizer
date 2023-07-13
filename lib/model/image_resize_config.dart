@@ -56,6 +56,22 @@ class ImageResizeConfig {
     destination = ProfileManager().documentsPath;
   }
 
+  ImageResizeConfig copy() {
+    ImageResizeConfig config = ImageResizeConfig()
+      ..name = name
+      ..destination = destination
+      ..height = height
+      ..width = width
+      ..imageFormat = imageFormat
+      ..filter = filter
+      ..jpgQuality = jpgQuality
+      ..pngCompression = pngCompression
+      ..scaleX = scaleX
+      ..scaleY = scaleY;
+
+    return config;
+  }
+
   Pointer<ImageResizeConfigC> toNativeStruct(String file, String dst) {
     Pointer<ImageResizeConfigC> struct = calloc<ImageResizeConfigC>();
     if (scaleX != 0 || scaleY != 0) {

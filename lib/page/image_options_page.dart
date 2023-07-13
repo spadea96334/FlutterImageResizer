@@ -5,6 +5,7 @@ import 'package:image_resizer/widget/tooltip_button.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
 import '../widget/options_input_widget.dart';
+import '../widget/profile_name_input_dialog.dart';
 
 class ImageOptionsPage extends StatefulWidget {
   const ImageOptionsPage({super.key});
@@ -16,6 +17,8 @@ class ImageOptionsPage extends StatefulWidget {
 class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepAliveClientMixin {
   final ImageResizer imageResizer = ImageResizer();
   final ProfileManager profileManager = ProfileManager();
+  final GlobalKey _profileKey = GlobalKey();
+  int _currentProfileIndex = 0;
 
   @override
   void initState() {
@@ -27,9 +30,11 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
   Widget build(BuildContext context) {
     super.build(context);
 
-    List<DropdownMenuItem> profileItems = [];
+    imageResizer.config = profileManager.profiles[_currentProfileIndex].copy();
+
+    List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
     for (var element in profileManager.profiles) {
-      profileItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+      profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
     }
 
     List<DropdownMenuItem> formatItems = [];
@@ -54,11 +59,18 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
             const Text('Profile:'),
             const SizedBox(width: 5),
             DropdownButton(
-                value: imageResizer.config,
+                key: _profileKey,
+                value: profileItems[_currentProfileIndex].value,
                 items: profileItems,
                 dropdownColor: Colors.grey[100],
                 focusColor: Colors.grey[100],
                 onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
+
+                  _currentProfileIndex = profileManager.profiles.indexOf(value);
+                  imageResizer.config = value.copy();
                   setState(() {});
                 }),
             TooltipButton(icon: const Icon(Icons.add), message: 'add', onPressed: addProfile),
@@ -191,15 +203,42 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
   }
 
   void addProfile() {
-    // TODO: add profile
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ProfileNameInputDialog(onFinished: (value) {
+            ImageResizeConfig config = imageResizer.config.copy();
+            config.name = value;
+            profileManager.profiles.add(config);
+            _currentProfileIndex = profileManager.profiles.length - 1;
+            profileManager.saveProfile().then((value) {
+              Navigator.pop(context);
+              setState(() {});
+            });
+          });
+        });
   }
 
   void saveProfile() {
+    profileManager.profiles[_currentProfileIndex] = imageResizer.config.copy();
     profileManager.saveProfile();
+    setState(() {});
   }
 
   void deleteProfile() {
-    // TODO: delete profile
+    if (profileManager.profiles.length == 1) {
+      // TODO: show tips
+      return;
+    }
+
+    profileManager.profiles.removeAt(_currentProfileIndex);
+    profileManager.saveProfile();
+
+    if (_currentProfileIndex > 0) {
+      _currentProfileIndex--;
+    }
+
+    setState(() {});
   }
 
   @override
