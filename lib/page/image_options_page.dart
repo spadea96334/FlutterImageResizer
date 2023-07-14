@@ -15,17 +15,17 @@ class ImageOptionsPage extends StatefulWidget {
 }
 
 class _ImageOptionsPageState extends State<ImageOptionsPage> {
-  final ImageResizer imageResizer = ImageResizer();
-  final ProfileManager profileManager = ProfileManager();
+  final ImageResizer _imageResizer = ImageResizer();
+  final ProfileManager _profileManager = ProfileManager();
   final GlobalKey _profileKey = GlobalKey();
   int _currentProfileIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    imageResizer.config = profileManager.profiles[_currentProfileIndex].copy();
+    _imageResizer.config = _profileManager.profiles[_currentProfileIndex].copy();
 
     List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
-    for (var element in profileManager.profiles) {
+    for (var element in _profileManager.profiles) {
       profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
     }
 
@@ -61,8 +61,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                     return;
                   }
 
-                  _currentProfileIndex = profileManager.profiles.indexOf(value);
-                  imageResizer.config = value.copy();
+                  _currentProfileIndex = _profileManager.profiles.indexOf(value);
+                  _imageResizer.config = value.copy();
                   setState(() {});
                 }),
             TooltipButton(icon: const Icon(Icons.add), message: 'add', onPressed: addProfile),
@@ -74,12 +74,12 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
             const Text('Format:'),
             const SizedBox(width: 5),
             DropdownButton(
-                value: imageResizer.config.imageFormat,
+                value: _imageResizer.config.imageFormat,
                 items: formatItems,
                 dropdownColor: Colors.grey[100],
                 focusColor: Colors.grey[100],
                 onChanged: (value) {
-                  imageResizer.config.imageFormat = value as ImageFormat;
+                  _imageResizer.config.imageFormat = value as ImageFormat;
                   setState(() {});
                 })
           ]),
@@ -88,46 +88,46 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
             const Text('Filter:'),
             const SizedBox(width: 5),
             DropdownButton(
-                value: imageResizer.config.filter,
+                value: _imageResizer.config.filter,
                 items: filterItems,
                 dropdownColor: Colors.grey[100],
                 focusColor: Colors.grey[100],
                 onChanged: (value) {
-                  imageResizer.config.filter = value as Interpolation;
+                  _imageResizer.config.filter = value as Interpolation;
                   setState(() {});
                 })
           ]),
           OptionInputWidget(
               title: 'Width',
               unitLabel: 'pixels',
-              initValue: imageResizer.config.width.toString(),
+              initValue: _imageResizer.config.width.toString(),
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
-                imageResizer.config.width = int.parse(value);
+                _imageResizer.config.width = int.parse(value);
               }),
           OptionInputWidget(
               title: 'Height',
               unitLabel: 'pixels',
-              initValue: imageResizer.config.height.toString(),
+              initValue: _imageResizer.config.height.toString(),
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
-                imageResizer.config.height = int.parse(value);
+                _imageResizer.config.height = int.parse(value);
               }),
           Tooltip(
             message: 'If value of precentage is not 0, pixel value will be invaild',
             child: OptionInputWidget(
                 title: 'Width',
                 unitLabel: '%',
-                initValue: imageResizer.config.scaleX.toString(),
+                initValue: _imageResizer.config.scaleX.toString(),
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '100',
                 onChanged: (value) {
                   value = value.isEmpty ? '100' : value;
-                  imageResizer.config.scaleX = int.parse(value);
+                  _imageResizer.config.scaleX = int.parse(value);
                 }),
           ),
           Tooltip(
@@ -135,17 +135,17 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               child: OptionInputWidget(
                   title: 'Height',
                   unitLabel: '%',
-                  initValue: imageResizer.config.scaleY.toString(),
+                  initValue: _imageResizer.config.scaleY.toString(),
                   allowPattern: RegExp('[0-9]+'),
                   hintText: '100',
                   onChanged: (value) {
                     value = value.isEmpty ? '100' : value;
-                    imageResizer.config.scaleY = int.parse(value);
+                    _imageResizer.config.scaleY = int.parse(value);
                   })),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',
-              initValue: imageResizer.config.jpgQuality.toString(),
+              initValue: _imageResizer.config.jpgQuality.toString(),
               allowPattern: RegExp('[0-9]'),
               hintText: '95(0~100)',
               onChanged: (value) {
@@ -155,12 +155,12 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                   setState(() {});
                 }
 
-                imageResizer.config.jpgQuality = int.parse(value);
+                _imageResizer.config.jpgQuality = int.parse(value);
               }),
           OptionInputWidget(
               title: 'Png compression',
               unitLabel: '',
-              initValue: imageResizer.config.pngCompression.toString(),
+              initValue: _imageResizer.config.pngCompression.toString(),
               allowPattern: RegExp('[0-9]'),
               hintText: '1(0~9)',
               onChanged: (value) {
@@ -169,17 +169,17 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                   value = '9';
                   setState(() {});
                 }
-                imageResizer.config.pngCompression = int.parse(value);
+                _imageResizer.config.pngCompression = int.parse(value);
               }),
           OptionInputWidget(
               title: 'File Destination',
               unitLabel: '',
-              initValue: imageResizer.config.destination,
+              initValue: _imageResizer.config.destination,
               icon: const Icon(Icons.folder_open),
               textFieldWidth: 300,
               iconButtonOnPressed: iconButtonOnPressed,
               onChanged: (value) {
-                imageResizer.config.destination = value;
+                _imageResizer.config.destination = value;
               })
         ]));
   }
@@ -190,7 +190,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       return;
     }
 
-    imageResizer.config.destination = result;
+    _imageResizer.config.destination = result;
     setState(() {});
   }
 
@@ -199,11 +199,11 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
         context: context,
         builder: (context) {
           return ProfileNameInputDialog(onFinished: (value) {
-            ImageResizeConfig config = imageResizer.config.copy();
+            ImageResizeConfig config = _imageResizer.config.copy();
             config.name = value;
-            profileManager.profiles.add(config);
-            _currentProfileIndex = profileManager.profiles.length - 1;
-            profileManager.saveProfile().then((value) {
+            _profileManager.profiles.add(config);
+            _currentProfileIndex = _profileManager.profiles.length - 1;
+            _profileManager.saveProfile().then((value) {
               Navigator.pop(context);
               setState(() {});
             });
@@ -212,19 +212,19 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   }
 
   void saveProfile() {
-    profileManager.profiles[_currentProfileIndex] = imageResizer.config.copy();
-    profileManager.saveProfile();
+    _profileManager.profiles[_currentProfileIndex] = _imageResizer.config.copy();
+    _profileManager.saveProfile();
     setState(() {});
   }
 
   void deleteProfile() {
-    if (profileManager.profiles.length == 1) {
+    if (_profileManager.profiles.length == 1) {
       // TODO: show tips
       return;
     }
 
-    profileManager.profiles.removeAt(_currentProfileIndex);
-    profileManager.saveProfile();
+    _profileManager.profiles.removeAt(_currentProfileIndex);
+    _profileManager.saveProfile();
 
     if (_currentProfileIndex > 0) {
       _currentProfileIndex--;

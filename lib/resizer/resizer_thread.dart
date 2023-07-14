@@ -8,24 +8,24 @@ import '../model/image_resize_config.dart';
 
 class ResizerThread {
   static ImageResizeConfig config = ImageResizeConfig();
-  Isolate? isolate;
-  final ReceivePort receivePort = ReceivePort();
-  SendPort? sendPort;
-  Completer<bool>? completer;
+  Isolate? _isolate;
+  final ReceivePort _receivePort = ReceivePort();
+  SendPort? _sendPort;
+  Completer<bool>? _completer;
 
   ResizerThread();
 
   Future<void> initIsolate() async {
     // Because isolate memery is indepedent, must copy config when init.
-    isolate = await Isolate.spawn(initCommunication, [receivePort.sendPort, config]);
+    _isolate = await Isolate.spawn(initCommunication, [_receivePort.sendPort, config]);
     Completer initCompleter = Completer();
-    receivePort.listen((message) {
+    _receivePort.listen((message) {
       if (message is SendPort) {
-        sendPort = message;
+        _sendPort = message;
         initCompleter.complete();
       } else {
-        completer?.complete(message);
-        completer = null;
+        _completer?.complete(message);
+        _completer = null;
       }
     });
 
@@ -33,14 +33,14 @@ class ResizerThread {
   }
 
   Future<bool> resize(File file) async {
-    while (isolate == null || sendPort == null || completer != null) {
+    while (_isolate == null || _sendPort == null || _completer != null) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
-    completer = Completer();
-    sendPort!.send(file);
+    _completer = Completer();
+    _sendPort!.send(file);
 
-    return completer!.future;
+    return _completer!.future;
   }
 
   static void initCommunication(List args) {
