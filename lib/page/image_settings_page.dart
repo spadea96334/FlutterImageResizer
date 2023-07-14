@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:image_resizer/utility/profile_manager.dart';
+import 'package:image_resizer/utility/setting_manager.dart';
 import '../resizer/image_resizer.dart';
 
 class ImageSettingsPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class _ImageSettingsPageState extends State<ImageSettingsPage> with AutomaticKee
                 focusColor: Colors.grey[100],
                 onChanged: (value) {
                   imageResizer.threadCount = value;
-                  ProfileManager().setSetting(SettingKey.threads, value.toString());
+                  SettingManager().setSetting(SettingKey.threads, value.toString());
                   setState(() {});
                 })
           ]),

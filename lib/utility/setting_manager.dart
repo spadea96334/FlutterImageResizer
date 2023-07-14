@@ -12,13 +12,13 @@ enum SettingKey {
   final String name;
 }
 
-class ProfileManager {
-  static final ProfileManager _singleton = ProfileManager._private();
+class SettingManager {
+  static final SettingManager _singleton = SettingManager._private();
   List<ImageResizeConfig> profiles = [];
   SharedPreferences? _prefs;
   String documentsPath = '';
 
-  ProfileManager._private();
+  SettingManager._private();
 
   Future<void> loadProfile() async {
     _prefs ??= await SharedPreferences.getInstance();
@@ -62,7 +62,7 @@ class ProfileManager {
     return value;
   }
 
-  factory ProfileManager() {
+  factory SettingManager() {
     return _singleton;
   }
 }

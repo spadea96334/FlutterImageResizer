@@ -1,6 +1,6 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:image_resizer/utility/profile_manager.dart';
+import 'package:image_resizer/utility/setting_manager.dart';
 import 'package:image_resizer/widget/tooltip_button.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
@@ -16,7 +16,7 @@ class ImageOptionsPage extends StatefulWidget {
 
 class _ImageOptionsPageState extends State<ImageOptionsPage> {
   final ImageResizer _imageResizer = ImageResizer();
-  final ProfileManager _profileManager = ProfileManager();
+  final SettingManager _profileManager = SettingManager();
   final GlobalKey _profileKey = GlobalKey();
   int _currentProfileIndex = 0;
 

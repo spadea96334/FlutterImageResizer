@@ -1,7 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
-import 'package:image_resizer/utility/profile_manager.dart';
+import 'package:image_resizer/utility/setting_manager.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'image_resize_config.g.dart';
@@ -53,7 +53,7 @@ class ImageResizeConfig {
   int scaleY = 100;
 
   ImageResizeConfig() {
-    destination = ProfileManager().documentsPath;
+    destination = SettingManager().documentsPath;
   }
 
   ImageResizeConfig copy() {
