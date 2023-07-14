@@ -10,13 +10,11 @@ class ImageSettingsPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ImageSettingsPageState();
 }
 
-class _ImageSettingsPageState extends State<ImageSettingsPage> with AutomaticKeepAliveClientMixin {
+class _ImageSettingsPageState extends State<ImageSettingsPage> {
   final ImageResizer imageResizer = ImageResizer();
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     List<DropdownMenuItem> formatItems = [];
     for (int i = 1; i <= Platform.numberOfProcessors; i++) {
       formatItems.add(DropdownMenuItem(value: i, child: Text(i.toString())));
@@ -46,7 +44,4 @@ class _ImageSettingsPageState extends State<ImageSettingsPage> with AutomaticKee
           ]),
         ]));
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }

@@ -12,12 +12,11 @@ class ImagePage extends StatefulWidget {
   State<StatefulWidget> createState() => _ImagePageState();
 }
 
-class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixin {
+class _ImagePageState extends State<ImagePage> {
   final ImageResizer imageResizer = ImageResizer();
 
   @override
   Widget build(BuildContext context) {
-    super.build(context);
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -123,7 +122,4 @@ class _ImagePageState extends State<ImagePage> with AutomaticKeepAliveClientMixi
       }
     }
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
