@@ -22,8 +22,6 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
   @override
   Widget build(BuildContext context) {
-    _imageResizer.config = _profileManager.profiles[_currentProfileIndex].copy();
-
     List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
     for (var element in _profileManager.profiles) {
       profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));

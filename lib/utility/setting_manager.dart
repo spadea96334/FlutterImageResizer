@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:image_resizer/model/image_resize_config.dart';
+import 'package:image_resizer/resizer/image_resizer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -19,6 +20,12 @@ class SettingManager {
   String documentsPath = '';
 
   SettingManager._private();
+
+  Future<void> loadSetting() async {
+    await loadProfile();
+    ImageResizer().config = profiles.first;
+    await ImageResizer().loadThreadsSetting();
+  }
 
   Future<void> loadProfile() async {
     _prefs ??= await SharedPreferences.getInstance();

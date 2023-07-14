@@ -9,8 +9,8 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // load opencv library
   OpenCVBridge();
-  // load profile
-  await SettingManager().loadProfile();
+  // load setting
+  await SettingManager().loadSetting();
   runApp(const MyApp());
 }
 

@@ -15,18 +15,16 @@ class ImageResizer with ChangeNotifier {
   bool _processing = false;
   int threadCount = Platform.numberOfProcessors;
 
-  ImageResizer._private() {
-    SettingManager().getSetting(SettingKey.threads).then((value) {
-      if (value == null) {
-        return;
-      }
+  ImageResizer._private();
 
-      try {
-        threadCount = int.parse(value);
-      } catch (e) {
-        return;
-      }
-    });
+  Future<void> loadThreadsSetting() async {
+    String? value = await SettingManager().getSetting(SettingKey.threads);
+    if (value == null) {
+      threadCount = Platform.numberOfProcessors;
+      return;
+    }
+
+    threadCount = int.tryParse(value) ?? Platform.numberOfProcessors;
   }
 
   Future<void> initThread(int count) async {
