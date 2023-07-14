@@ -53,20 +53,23 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> pages = [const ImagePage(), const ImageOptionsPage(), const ImageSettingsPage()];
+
     return NavigationView(
-        pane: NavigationPane(
-            selected: topIndex,
-            onChanged: (index) => setState(() => topIndex = index),
-            displayMode: PaneDisplayMode.open,
-            size: const NavigationPaneSize(openMaxWidth: 150),
-            items: [
-          PaneItem(icon: const Icon(FluentIcons.picture), title: const Text('Image'), body: const ImagePage()),
-          PaneItem(
-              icon: const Icon(FluentIcons.column_options),
-              title: const Text('Image options'),
-              body: const ImageOptionsPage()),
-          PaneItem(
-              icon: const Icon(FluentIcons.settings), title: const Text('Settings'), body: const ImageSettingsPage())
-        ]));
+      pane: NavigationPane(
+          selected: topIndex,
+          onChanged: (index) => setState(() => topIndex = index),
+          displayMode: PaneDisplayMode.open,
+          size: const NavigationPaneSize(openMaxWidth: 150),
+          items: [
+            PaneItem(icon: const Icon(FluentIcons.picture), title: const Text('Image'), body: const SizedBox()),
+            PaneItem(
+                icon: const Icon(FluentIcons.column_options),
+                title: const Text('Image options'),
+                body: const SizedBox()),
+            PaneItem(icon: const Icon(FluentIcons.settings), title: const Text('Settings'), body: const SizedBox())
+          ]),
+      paneBodyBuilder: (item, body) => IndexedStack(index: topIndex, children: pages),
+    );
   }
 }

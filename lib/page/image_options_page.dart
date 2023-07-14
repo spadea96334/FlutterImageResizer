@@ -14,22 +14,14 @@ class ImageOptionsPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ImageOptionsPageState();
 }
 
-class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepAliveClientMixin {
+class _ImageOptionsPageState extends State<ImageOptionsPage> {
   final ImageResizer imageResizer = ImageResizer();
   final ProfileManager profileManager = ProfileManager();
   final GlobalKey _profileKey = GlobalKey();
   int _currentProfileIndex = 0;
 
   @override
-  void initState() {
-    super.initState();
-    imageResizer.config = profileManager.profiles.first;
-  }
-
-  @override
   Widget build(BuildContext context) {
-    super.build(context);
-
     imageResizer.config = profileManager.profiles[_currentProfileIndex].copy();
 
     List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
@@ -240,7 +232,4 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> with AutomaticKeepA
 
     setState(() {});
   }
-
-  @override
-  bool get wantKeepAlive => true;
 }
