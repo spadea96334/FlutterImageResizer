@@ -70,7 +70,7 @@ class ResizerThread {
     if (config.imageFormat == ImageFormat.origin) {
       newPath = p.join(config.destination, filename);
     } else {
-      newPath = p.join(config.destination, baseName, '.', config.imageFormat.extension);
+      newPath = p.join(config.destination, '$baseName.${config.imageFormat.extension}');
     }
     print('dst2: $newPath');
     return OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath));
