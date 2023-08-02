@@ -32,6 +32,11 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       formatItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
 
+    List<DropdownMenuItem> policyItems = [];
+    for (var element in ResizePolicy.values) {
+      policyItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
     List<DropdownMenuItem> filterItems = [];
     for (var element in Interpolation.values) {
       filterItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
@@ -78,6 +83,20 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 focusColor: Colors.grey[100],
                 onChanged: (value) {
                   _imageResizer.config.imageFormat = value as ImageFormat;
+                  setState(() {});
+                })
+          ]),
+          Row(children: [
+            const SizedBox(width: 10),
+            const Text('Policy:'),
+            const SizedBox(width: 5),
+            DropdownButton(
+                value: _imageResizer.config.policy,
+                items: policyItems,
+                dropdownColor: Colors.grey[100],
+                focusColor: Colors.grey[100],
+                onChanged: (value) {
+                  _imageResizer.config.policy = value as ResizePolicy;
                   setState(() {});
                 })
           ]),

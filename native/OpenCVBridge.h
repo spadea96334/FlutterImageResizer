@@ -7,6 +7,8 @@ extern "C" {
 #define EXPORT extern "C" __attribute__((visibility("default"))) __attribute__((used))
 #endif
 
+enum resizePolicy { always, reduce, enlarge };
+
 struct Config {
   char *file;
   char *dst;
@@ -17,6 +19,7 @@ struct Config {
   int filter;
   int jpgQuality;
   int pngCompression;
+  int policy;
 };
 
 // EXPORT bool resizeImage(char *path, char *dst, int width, int height, double scaleX, double scaleY, int interpolation);

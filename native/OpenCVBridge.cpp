@@ -2,14 +2,14 @@
 
 #include <opencv2/opencv.hpp>
 
+bool checkNeedResize(cv::Mat image, Config *config);
+
 bool resizeImage(Config *config) {
   cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);
 
   if (image.data == NULL) {
     return false;
   }
-
-  cv::Mat resizedImage;
 
   cv::Size size;
 
@@ -18,10 +18,45 @@ bool resizeImage(Config *config) {
     size.height = config->height;
   }
 
-  cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, config->filter);
+  if (checkNeedResize(image, config)) {
+    cv::Mat resizedImage;
+    cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, config->filter);
+    image = resizedImage;
+  }
+
   std::vector<int> compression_params;
 
-  cv::imwrite(config->dst, resizedImage, compression_params);
+  cv::imwrite(config->dst, image, compression_params);
 
   return true;
+}
+
+bool checkNeedResize(cv::Mat image, Config *config) {
+  if (config->policy == always) {
+    return true;
+  }
+
+  if (config->policy == reduce) {
+    if (image.size().width < config->width && config->width != 0) {
+      return false;
+    }
+
+    if (image.size().height < config->height && config->height != 0) {
+      return false;
+    }
+
+    return true;
+  } else if (config->policy == enlarge) {
+    if (image.size().width > config->width && config->width != 0) {
+      return true;
+    }
+
+    if (image.size().height > config->height && config->height != 0) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return false;
 }

@@ -29,6 +29,15 @@ enum Interpolation {
   final int value;
 }
 
+enum ResizePolicy {
+  always(0),
+  reduce(1),
+  enlarge(2);
+
+  const ResizePolicy(this.value);
+  final int value;
+}
+
 @JsonSerializable(explicitToJson: true)
 class ImageResizeProfiles {
   List<ImageResizeConfig> profiles = [];
@@ -51,6 +60,7 @@ class ImageResizeConfig {
   int pngCompression = 1;
   int scaleX = 100;
   int scaleY = 100;
+  ResizePolicy policy = ResizePolicy.always;
 
   ImageResizeConfig() {
     destination = SettingManager().documentsPath;
@@ -67,7 +77,8 @@ class ImageResizeConfig {
       ..jpgQuality = jpgQuality
       ..pngCompression = pngCompression
       ..scaleX = scaleX
-      ..scaleY = scaleY;
+      ..scaleY = scaleY
+      ..policy = policy;
 
     return config;
   }
@@ -89,6 +100,7 @@ class ImageResizeConfig {
     struct.ref.dst = dst.toNativeUtf8();
     struct.ref.scaleX = scaleX / 100;
     struct.ref.scaleY = scaleY / 100;
+    struct.ref.policy = policy.value;
 
     return struct;
   }
@@ -114,4 +126,6 @@ class ImageResizeConfigC extends Struct {
   external int jpgQuality;
   @Int()
   external int pngCompression;
+  @Int()
+  external int policy;
 }
