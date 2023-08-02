@@ -1,6 +1,7 @@
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:image_resizer/utility/setting_manager.dart';
+import 'package:image_resizer/widget/options_dropdown_widget.dart';
 import 'package:image_resizer/widget/tooltip_button.dart';
 import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
@@ -17,7 +18,6 @@ class ImageOptionsPage extends StatefulWidget {
 class _ImageOptionsPageState extends State<ImageOptionsPage> {
   final ImageResizer _imageResizer = ImageResizer();
   final SettingManager _profileManager = SettingManager();
-  final GlobalKey _profileKey = GlobalKey();
   int _currentProfileIndex = 0;
 
   @override
@@ -27,17 +27,17 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
     }
 
-    List<DropdownMenuItem> formatItems = [];
+    List<DropdownMenuItem<ImageFormat>> formatItems = [];
     for (var element in ImageFormat.values) {
       formatItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
 
-    List<DropdownMenuItem> policyItems = [];
+    List<DropdownMenuItem<ResizePolicy>> policyItems = [];
     for (var element in ResizePolicy.values) {
       policyItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
 
-    List<DropdownMenuItem> filterItems = [];
+    List<DropdownMenuItem<Interpolation>> filterItems = [];
     for (var element in Interpolation.values) {
       filterItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
@@ -50,15 +50,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 child: Container(padding: const EdgeInsets.fromLTRB(4, 4, 4, 4), child: const Text('Image options')))
           ]),
           Row(children: [
-            const SizedBox(width: 10),
-            const Text('Profile:'),
-            const SizedBox(width: 5),
-            DropdownButton(
-                key: _profileKey,
-                value: profileItems[_currentProfileIndex].value,
+            OptionDropdownWidget<ImageResizeConfig>(
+                title: 'Profile:',
+                value: profileItems[_currentProfileIndex].value!,
                 items: profileItems,
-                dropdownColor: Colors.grey[100],
-                focusColor: Colors.grey[100],
                 onChanged: (value) {
                   if (value == null) {
                     return;
@@ -72,48 +67,42 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
             TooltipButton(icon: const Icon(Icons.save_as), message: 'save', onPressed: saveProfile),
             TooltipButton(icon: const Icon(Icons.delete_forever), message: 'delete', onPressed: deleteProfile)
           ]),
-          Row(children: [
-            const SizedBox(width: 10),
-            const Text('Format:'),
-            const SizedBox(width: 5),
-            DropdownButton(
-                value: _imageResizer.config.imageFormat,
-                items: formatItems,
-                dropdownColor: Colors.grey[100],
-                focusColor: Colors.grey[100],
-                onChanged: (value) {
-                  _imageResizer.config.imageFormat = value as ImageFormat;
-                  setState(() {});
-                })
-          ]),
-          Row(children: [
-            const SizedBox(width: 10),
-            const Text('Policy:'),
-            const SizedBox(width: 5),
-            DropdownButton(
-                value: _imageResizer.config.policy,
-                items: policyItems,
-                dropdownColor: Colors.grey[100],
-                focusColor: Colors.grey[100],
-                onChanged: (value) {
-                  _imageResizer.config.policy = value as ResizePolicy;
-                  setState(() {});
-                })
-          ]),
-          Row(children: [
-            const SizedBox(width: 10),
-            const Text('Filter:'),
-            const SizedBox(width: 5),
-            DropdownButton(
-                value: _imageResizer.config.filter,
-                items: filterItems,
-                dropdownColor: Colors.grey[100],
-                focusColor: Colors.grey[100],
-                onChanged: (value) {
-                  _imageResizer.config.filter = value as Interpolation;
-                  setState(() {});
-                })
-          ]),
+          OptionDropdownWidget<ImageFormat>(
+              title: 'Format:',
+              value: _imageResizer.config.imageFormat,
+              items: formatItems,
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+
+                _imageResizer.config.imageFormat = value;
+                setState(() {});
+              }),
+          OptionDropdownWidget<ResizePolicy>(
+              title: 'Policy:',
+              value: _imageResizer.config.policy,
+              items: policyItems,
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+
+                _imageResizer.config.policy = value;
+                setState(() {});
+              }),
+          OptionDropdownWidget<Interpolation>(
+              title: 'Filter:',
+              value: _imageResizer.config.filter,
+              items: filterItems,
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+
+                _imageResizer.config.filter = value;
+                setState(() {});
+              }),
           OptionInputWidget(
               title: 'Width',
               unitLabel: 'pixels',
