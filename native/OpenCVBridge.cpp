@@ -24,9 +24,9 @@ bool resizeImage(Config *config) {
     image = resizedImage;
   }
 
-  std::vector<int> compression_params;
+  std::vector<int> compressionParams;
 
-  return cv::imwrite(config->dst, image, compression_params);
+  return cv::imwrite(config->dst, image, compressionParams);
 }
 
 bool checkNeedResize(cv::Mat image, Config *config) {
