@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class OptionInputWidget extends StatelessWidget {
-  OptionInputWidget({
-    super.key,
-    required this.title,
-    this.unitLabel,
-    this.onChanged,
-    this.allowPattern,
-    this.initValue,
-    this.icon,
-    this.textFieldWidth = 100,
-    this.iconButtonOnPressed,
-    this.hintText,
-  });
+class OptionInputWidget extends HookWidget {
+  OptionInputWidget(
+      {super.key,
+      required this.title,
+      this.unitLabel,
+      this.onChanged,
+      this.allowPattern,
+      this.icon,
+      this.textFieldWidth = 100,
+      this.iconButtonOnPressed,
+      this.hintText,
+      required this.notifier,
+      required this.valueHandler,
+      this.ignoreZero = true});
 
   final String title;
   final String? unitLabel;
-  final String? initValue;
   final String? hintText;
   final Function(String value)? onChanged;
   final Pattern? allowPattern;
@@ -25,11 +26,18 @@ class OptionInputWidget extends StatelessWidget {
   final TextEditingController _textEditingController = TextEditingController();
   final double textFieldWidth;
   final Function()? iconButtonOnPressed;
+  final ChangeNotifier notifier;
+  final String Function() valueHandler;
+  final bool ignoreZero;
   String get text => getTextFieldValue();
 
   @override
   Widget build(BuildContext context) {
+    useListenableSelector(notifier, () => valueChanged());
+
     List<TextInputFormatter> inputFormatters = [];
+
+    _textEditingController.text = valueHandler();
 
     if (allowPattern != null) {
       inputFormatters.add(FilteringTextInputFormatter.allow(RegExp('[0-9]+')));
@@ -40,11 +48,19 @@ class OptionInputWidget extends StatelessWidget {
         decoration:
             InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(vertical: 6), hintText: hintText),
         inputFormatters: inputFormatters,
-        onChanged: onChanged);
+        onChanged: (value) {
+          if (value.startsWith('0')) {
+            if (ignoreZero) {
+              value = value.replaceFirst('0', '');
+              _textEditingController.text = value;
+              _textEditingController.selection = TextSelection.fromPosition(TextPosition(offset: value.length));
+            }
+          }
 
-    if (initValue != null) {
-      _textEditingController.text = initValue!;
-    }
+          if (onChanged != null) {
+            onChanged!(value);
+          }
+        });
 
     IconButton? iconButton;
     if (icon != null) {
@@ -71,5 +87,15 @@ class OptionInputWidget extends StatelessWidget {
 
   String getTextFieldValue() {
     return _textEditingController.text;
+  }
+
+  void valueChanged() {
+    print(title);
+    String value = valueHandler();
+    if (_textEditingController.text == value) {
+      return;
+    }
+
+    _textEditingController.text = value;
   }
 }

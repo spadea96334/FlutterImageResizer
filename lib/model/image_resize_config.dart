@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:ffi/ffi.dart';
+import 'package:flutter/material.dart';
 import 'package:image_resizer/utility/setting_manager.dart';
 import 'package:json_annotation/json_annotation.dart';
 

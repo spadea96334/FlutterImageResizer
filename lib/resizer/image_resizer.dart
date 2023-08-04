@@ -10,6 +10,7 @@ class ImageResizer with ChangeNotifier {
   static final ImageResizer _singleton = ImageResizer._private();
   List<File> fileList = [];
   ImageResizeConfig config = ImageResizeConfig();
+  ChangeNotifier configNotifier = ChangeNotifier();
   Completer<void>? _availableThreadCompleter;
   int processCount = 0;
   bool _processing = false;
@@ -95,5 +96,9 @@ class ImageResizer with ChangeNotifier {
     _availableThreadCompleter = null;
 
     return _availableThreads.removeAt(0);
+  }
+
+  void configChanged() {
+    configNotifier.notifyListeners();
   }
 }

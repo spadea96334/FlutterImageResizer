@@ -61,7 +61,6 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
                   _currentProfileIndex = _profileManager.profiles.indexOf(value);
                   _imageResizer.config = value.copy();
-                  setState(() {});
                 }),
             TooltipButton(icon: const Icon(Icons.add), message: 'add', onPressed: addProfile),
             TooltipButton(icon: const Icon(Icons.save_as), message: 'save', onPressed: saveProfile),
@@ -101,39 +100,50 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 }
 
                 _imageResizer.config.filter = value;
-                setState(() {});
               }),
           OptionInputWidget(
               title: 'Width',
               unitLabel: 'pixels',
-              initValue: _imageResizer.config.width.toString(),
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
+              notifier: _imageResizer.configNotifier,
+              valueHandler: () {
+                return _imageResizer.config.width.toString();
+              },
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 _imageResizer.config.width = int.parse(value);
+                resetScaleValue();
               }),
           OptionInputWidget(
               title: 'Height',
               unitLabel: 'pixels',
-              initValue: _imageResizer.config.height.toString(),
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
+              notifier: _imageResizer.configNotifier,
+              valueHandler: () {
+                return _imageResizer.config.height.toString();
+              },
               onChanged: (value) {
                 value = value.isEmpty ? '0' : value;
                 _imageResizer.config.height = int.parse(value);
+                resetScaleValue();
               }),
           Tooltip(
             message: 'If value of precentage is not 0, pixel value will be invaild',
             child: OptionInputWidget(
                 title: 'Width',
                 unitLabel: '%',
-                initValue: _imageResizer.config.scaleX.toString(),
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '100',
+                notifier: _imageResizer.configNotifier,
+                valueHandler: () {
+                  return _imageResizer.config.scaleX.toString();
+                },
                 onChanged: (value) {
                   value = value.isEmpty ? '100' : value;
                   _imageResizer.config.scaleX = int.parse(value);
+                  resetPixelValue();
                 }),
           ),
           Tooltip(
@@ -141,19 +151,26 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               child: OptionInputWidget(
                   title: 'Height',
                   unitLabel: '%',
-                  initValue: _imageResizer.config.scaleY.toString(),
                   allowPattern: RegExp('[0-9]+'),
                   hintText: '100',
+                  notifier: _imageResizer.configNotifier,
+                  valueHandler: () {
+                    return _imageResizer.config.scaleY.toString();
+                  },
                   onChanged: (value) {
                     value = value.isEmpty ? '100' : value;
                     _imageResizer.config.scaleY = int.parse(value);
+                    resetPixelValue();
                   })),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',
-              initValue: _imageResizer.config.jpgQuality.toString(),
               allowPattern: RegExp('[0-9]'),
               hintText: '95(0~100)',
+              notifier: _imageResizer,
+              valueHandler: () {
+                return _imageResizer.config.jpgQuality.toString();
+              },
               onChanged: (value) {
                 value = value.isEmpty ? '95' : value;
                 if (int.parse(value) > 100) {
@@ -166,9 +183,12 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           OptionInputWidget(
               title: 'Png compression',
               unitLabel: '',
-              initValue: _imageResizer.config.pngCompression.toString(),
               allowPattern: RegExp('[0-9]'),
               hintText: '1(0~9)',
+              notifier: _imageResizer,
+              valueHandler: () {
+                return _imageResizer.config.pngCompression.toString();
+              },
               onChanged: (value) {
                 value = value.isEmpty ? '1' : value;
                 if (int.parse(value) > 9) {
@@ -180,14 +200,37 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           OptionInputWidget(
               title: 'File Destination',
               unitLabel: '',
-              initValue: _imageResizer.config.destination,
               icon: const Icon(Icons.folder_open),
               textFieldWidth: 300,
+              notifier: _imageResizer,
+              valueHandler: () {
+                return _imageResizer.config.destination;
+              },
               iconButtonOnPressed: iconButtonOnPressed,
               onChanged: (value) {
                 _imageResizer.config.destination = value;
               })
         ]));
+  }
+
+  void resetPixelValue() {
+    if (_imageResizer.config.width == 0 && _imageResizer.config.height == 0) {
+      return;
+    }
+
+    _imageResizer.config.width = 0;
+    _imageResizer.config.height = 0;
+    _imageResizer.configChanged();
+  }
+
+  void resetScaleValue() {
+    if (_imageResizer.config.scaleX == 0 && _imageResizer.config.scaleY == 0) {
+      return;
+    }
+
+    _imageResizer.config.scaleX = 0;
+    _imageResizer.config.scaleY = 0;
+    _imageResizer.configChanged();
   }
 
   Future<void> iconButtonOnPressed() async {
