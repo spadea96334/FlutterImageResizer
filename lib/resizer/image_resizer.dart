@@ -1,16 +1,17 @@
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/material.dart';
+import 'package:image_resizer/utility/event_notifier.dart';
 import 'package:image_resizer/utility/setting_manager.dart';
 import '../model/image_resize_config.dart';
 import 'resizer_thread.dart';
 
-class ImageResizer with ChangeNotifier {
+class ImageResizer {
   final List<ResizerThread> _availableThreads = [];
   static final ImageResizer _singleton = ImageResizer._private();
   List<File> fileList = [];
   ImageResizeConfig config = ImageResizeConfig();
-  ChangeNotifier configNotifier = ChangeNotifier();
+  EventNotifier configNotifier = EventNotifier();
+  EventNotifier progressNotifier = EventNotifier();
   Completer<void>? _availableThreadCompleter;
   int processCount = 0;
   bool _processing = false;
@@ -72,7 +73,7 @@ class ImageResizer with ChangeNotifier {
       print('get thread succ');
       thread.resize(file).then((value) {
         processCount++;
-        notifyListeners();
+        progressNotifier.emit();
         _availableThreads.add(thread);
         _availableThreadCompleter?.complete();
 
@@ -99,6 +100,6 @@ class ImageResizer with ChangeNotifier {
   }
 
   void configChanged() {
-    configNotifier.notifyListeners();
+    configNotifier.emit();
   }
 }

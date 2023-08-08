@@ -106,7 +106,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: 'pixels',
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
-              notifier: _imageResizer.configNotifier,
+              listenable: _imageResizer.configNotifier,
               valueHandler: () {
                 return _imageResizer.config.width.toString();
               },
@@ -120,7 +120,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: 'pixels',
               allowPattern: RegExp('[0-9]+'),
               hintText: '0',
-              notifier: _imageResizer.configNotifier,
+              listenable: _imageResizer.configNotifier,
               valueHandler: () {
                 return _imageResizer.config.height.toString();
               },
@@ -136,7 +136,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 unitLabel: '%',
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '100',
-                notifier: _imageResizer.configNotifier,
+                listenable: _imageResizer.configNotifier,
                 valueHandler: () {
                   return _imageResizer.config.scaleX.toString();
                 },
@@ -153,7 +153,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                   unitLabel: '%',
                   allowPattern: RegExp('[0-9]+'),
                   hintText: '100',
-                  notifier: _imageResizer.configNotifier,
+                  listenable: _imageResizer.configNotifier,
                   valueHandler: () {
                     return _imageResizer.config.scaleY.toString();
                   },
@@ -167,7 +167,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: '%',
               allowPattern: RegExp('[0-9]'),
               hintText: '95(0~100)',
-              notifier: _imageResizer,
+              listenable: _imageResizer.configNotifier,
               valueHandler: () {
                 return _imageResizer.config.jpgQuality.toString();
               },
@@ -185,7 +185,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: '',
               allowPattern: RegExp('[0-9]'),
               hintText: '1(0~9)',
-              notifier: _imageResizer,
+              listenable: _imageResizer.configNotifier,
               valueHandler: () {
                 return _imageResizer.config.pngCompression.toString();
               },
@@ -202,7 +202,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: '',
               icon: const Icon(Icons.folder_open),
               textFieldWidth: 300,
-              notifier: _imageResizer,
+              listenable: _imageResizer.configNotifier,
               valueHandler: () {
                 return _imageResizer.config.destination;
               },

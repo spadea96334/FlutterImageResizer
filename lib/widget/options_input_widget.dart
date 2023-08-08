@@ -13,7 +13,7 @@ class OptionInputWidget extends HookWidget {
       this.textFieldWidth = 100,
       this.iconButtonOnPressed,
       this.hintText,
-      required this.notifier,
+      required this.listenable,
       required this.valueHandler,
       this.ignoreZero = true});
 
@@ -26,14 +26,14 @@ class OptionInputWidget extends HookWidget {
   final TextEditingController _textEditingController = TextEditingController();
   final double textFieldWidth;
   final Function()? iconButtonOnPressed;
-  final ChangeNotifier notifier;
+  final Listenable listenable;
   final String Function() valueHandler;
   final bool ignoreZero;
   String get text => getTextFieldValue();
 
   @override
   Widget build(BuildContext context) {
-    useListenableSelector(notifier, () => valueChanged());
+    useListenableSelector(listenable, () => valueChanged());
 
     List<TextInputFormatter> inputFormatters = [];
 

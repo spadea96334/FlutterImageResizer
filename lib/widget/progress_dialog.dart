@@ -13,7 +13,7 @@ class ProgressDialog extends StatelessWidget {
             width: 500,
             padding: const EdgeInsets.all(16),
             child: ListenableBuilder(
-                listenable: _imageResizer,
+                listenable: _imageResizer.progressNotifier,
                 builder: (context, child) {
                   double progress = _imageResizer.processCount / _imageResizer.fileList.length;
                   Text label = progress == 1 ? const Text('Successed!') : const Text('Processing...');
