@@ -58,12 +58,26 @@ class ImageResizeConfig {
   Interpolation filter = Interpolation.area;
   int jpgQuality = 95;
   int pngCompression = 1;
-  int scaleX = 100;
-  int scaleY = 100;
+  int scaleX = 0;
+  int scaleY = 0;
   ResizePolicy policy = ResizePolicy.always;
 
   ImageResizeConfig() {
     destination = SettingManager().documentsPath;
+  }
+
+  void changeUnitToPixel() {
+    width = scaleX;
+    height = scaleY;
+    scaleX = 0;
+    scaleY = 0;
+  }
+
+  void changeUnitToPercentage() {
+    scaleX = width;
+    scaleY = height;
+    width = 0;
+    height = 0;
   }
 
   ImageResizeConfig copy() {
