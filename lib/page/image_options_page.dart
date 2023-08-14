@@ -49,10 +49,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Row(children: [
-            Expanded(
-                child: Container(padding: const EdgeInsets.fromLTRB(4, 4, 4, 4), child: const Text('Image options')))
-          ]),
+          Container(
+              padding: const EdgeInsets.only(top: 10, left: 5),
+              child: const Text('Options', style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700))),
+          const Padding(padding: EdgeInsets.only(left: 5, right: 5), child: Divider(height: 1, color: Colors.black)),
           Row(children: [
             OptionDropdownWidget<ImageResizeConfig>(
                 title: 'Profile:',
@@ -70,18 +70,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
             TooltipButton(icon: const Icon(Icons.save_as), message: 'save', onPressed: saveProfile),
             TooltipButton(icon: const Icon(Icons.delete_forever), message: 'delete', onPressed: deleteProfile)
           ]),
-          OptionDropdownWidget<ImageFormat>(
-              title: 'Format:',
-              value: _imageResizer.config.imageFormat,
-              items: formatItems,
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
-
-                _imageResizer.config.imageFormat = value;
-                setState(() {});
-              }),
+          const Padding(padding: EdgeInsets.only(left: 5), child: Text('Size', style: TextStyle(fontSize: 16))),
+          const Padding(padding: EdgeInsets.only(left: 5, right: 5), child: Divider(height: 1, color: Colors.black54)),
           OptionDropdownWidget<ResizePolicy>(
               title: 'Policy:',
               value: _imageResizer.config.policy,
@@ -174,6 +164,20 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 }),
             const Text('auto')
           ]),
+          const Padding(padding: EdgeInsets.only(left: 5), child: Text('File', style: TextStyle(fontSize: 16))),
+          const Padding(padding: EdgeInsets.only(left: 5, right: 5), child: Divider(height: 1, color: Colors.black54)),
+          OptionDropdownWidget<ImageFormat>(
+              title: 'Format:',
+              value: _imageResizer.config.imageFormat,
+              items: formatItems,
+              onChanged: (value) {
+                if (value == null) {
+                  return;
+                }
+
+                _imageResizer.config.imageFormat = value;
+                setState(() {});
+              }),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',
