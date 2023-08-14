@@ -49,16 +49,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  int _topIndex = 0;
+  int _currentIndex = 0;
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> pages = [const ImagePage(), const ImageOptionsPage(), const ImageSettingsPage()];
+    List<Widget> pages = [
+      ImagePage(toOptionsPage: () {
+        _currentIndex = 1;
+        setState(() {});
+      }),
+      const ImageOptionsPage(),
+      const ImageSettingsPage()
+    ];
 
     return NavigationView(
       pane: NavigationPane(
-          selected: _topIndex,
-          onChanged: (index) => setState(() => _topIndex = index),
+          selected: _currentIndex,
+          onChanged: (index) => setState(() => _currentIndex = index),
           displayMode: PaneDisplayMode.open,
           size: const NavigationPaneSize(openMaxWidth: 150),
           items: [
@@ -69,7 +76,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 body: const SizedBox()),
             PaneItem(icon: const Icon(FluentIcons.settings), title: const Text('Settings'), body: const SizedBox())
           ]),
-      paneBodyBuilder: (item, body) => IndexedStack(index: _topIndex, children: pages),
+      paneBodyBuilder: (item, body) => IndexedStack(index: _currentIndex, children: pages),
     );
   }
 }

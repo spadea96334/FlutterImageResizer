@@ -15,7 +15,8 @@ class OptionInputWidget extends HookWidget {
       this.hintText,
       required this.listenable,
       required this.valueHandler,
-      this.ignoreZero = true});
+      this.ignoreZero = true,
+      this.enabled = true});
 
   final String title;
   final String? unitLabel;
@@ -29,6 +30,7 @@ class OptionInputWidget extends HookWidget {
   final Listenable listenable;
   final String Function() valueHandler;
   final bool ignoreZero;
+  final bool enabled;
   String get text => getTextFieldValue();
 
   @override
@@ -48,6 +50,7 @@ class OptionInputWidget extends HookWidget {
         decoration:
             InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(vertical: 6), hintText: hintText),
         inputFormatters: inputFormatters,
+        enabled: enabled,
         onChanged: (value) {
           if (value.startsWith('0')) {
             if (ignoreZero) {
@@ -90,12 +93,12 @@ class OptionInputWidget extends HookWidget {
   }
 
   void valueChanged() {
-    print(title);
     String value = valueHandler();
     if (_textEditingController.text == value) {
       return;
     }
 
+    print(title);
     _textEditingController.text = value;
   }
 }

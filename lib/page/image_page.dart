@@ -2,11 +2,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:cross_file/cross_file.dart';
-import 'package:image_resizer/widget/progress_dialog.dart';
 import '../resizer/image_resizer.dart';
 
 class ImagePage extends StatefulWidget {
-  const ImagePage({super.key});
+  const ImagePage({super.key, required this.toOptionsPage});
+
+  final Function() toOptionsPage;
 
   @override
   State<StatefulWidget> createState() => _ImagePageState();
@@ -52,32 +53,20 @@ class _ImagePageState extends State<ImagePage> {
             Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5),
                 child: TextButton(
-                    onPressed: resizeButtonPressed,
+                    onPressed: nextButtonPressed,
                     style: const ButtonStyle(
                         foregroundColor: MaterialStatePropertyAll(Colors.black87),
                         backgroundColor: MaterialStatePropertyAll(Colors.white),
                         shape: MaterialStatePropertyAll(RoundedRectangleBorder(
                             side: BorderSide(color: Colors.black45),
                             borderRadius: BorderRadius.all(Radius.circular(15))))),
-                    child: const Text('go')))
+                    child: const Text('Next')))
           ])
         ]));
   }
 
-  void resizeButtonPressed() {
-    if (imageResizer.config.height == 0 || imageResizer.config.width == 0) {
-      if (imageResizer.config.scaleX == 0 || imageResizer.config.scaleY == 0) {
-        print('error size');
-        // TODO: show error toast
-        return;
-      }
-    }
-    showDialog(
-        context: context,
-        builder: (context) {
-          return ProgressDialog();
-        });
-    imageResizer.resize();
+  void nextButtonPressed() {
+    widget.toOptionsPage();
   }
 
   void clearButtonPressed() {

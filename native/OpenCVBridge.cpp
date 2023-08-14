@@ -3,6 +3,7 @@
 #include <opencv2/opencv.hpp>
 
 bool checkNeedResize(cv::Mat image, Config *config);
+cv::Size calSize(cv::Mat image, Config *config);
 
 bool resizeImage(Config *config) {
   cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);
@@ -11,12 +12,7 @@ bool resizeImage(Config *config) {
     return false;
   }
 
-  cv::Size size;
-
-  if (config->width != 0 && config->height != 0) {
-    size.width = config->width;
-    size.height = config->height;
-  }
+  cv::Size size = calSize(image, config);
 
   if (checkNeedResize(image, config)) {
     cv::Mat resizedImage;
@@ -27,6 +23,28 @@ bool resizeImage(Config *config) {
   std::vector<int> compressionParams;
 
   return cv::imwrite(config->dst, image, compressionParams);
+}
+
+cv::Size calSize(cv::Mat image, Config *config) {
+  cv::Size size;
+
+  if (config->width != 0 && config->height != 0) {
+    size.width = config->width;
+    size.height = config->height;
+  } else if (config->width == 0 && config->height == 0) {
+  } else {
+    if (config->width == 0) {
+      double scale = (double)config->height / image.size().height;
+      size.height = config->height;
+      size.width = cv::saturate_cast<int>(image.size().width * scale);
+    } else if (config->height == 0) {
+      double scale = (double)config->width / image.size().width;
+      size.width = config->width;
+      size.height = cv::saturate_cast<int>(image.size().height * scale);
+    }
+  }
+
+  return size;
 }
 
 bool checkNeedResize(cv::Mat image, Config *config) {

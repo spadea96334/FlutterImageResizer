@@ -7,6 +7,7 @@ import '../model/image_resize_config.dart';
 import '../resizer/image_resizer.dart';
 import '../widget/options_input_widget.dart';
 import '../widget/profile_name_input_dialog.dart';
+import '../widget/progress_dialog.dart';
 
 class ImageOptionsPage extends StatefulWidget {
   const ImageOptionsPage({super.key});
@@ -20,6 +21,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   final SettingManager _profileManager = SettingManager();
   bool _usePixelUnit = true;
   int _currentProfileIndex = 0;
+  bool _widthAuto = false;
+  bool _heightAuto = false;
 
   @override
   Widget build(BuildContext context) {
@@ -121,24 +124,56 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 }),
             const Text('percentage')
           ]),
-          OptionInputWidget(
-              title: 'Width',
-              unitLabel: _usePixelUnit ? 'pixels' : '%',
-              allowPattern: RegExp('[0-9]+'),
-              hintText: '0',
-              listenable: _imageResizer.configNotifier,
-              valueHandler: () =>
-                  _usePixelUnit ? _imageResizer.config.width.toString() : _imageResizer.config.scaleX.toString(),
-              onChanged: widthChanged),
-          OptionInputWidget(
-              title: 'Height',
-              unitLabel: _usePixelUnit ? 'pixels' : '%',
-              allowPattern: RegExp('[0-9]+'),
-              hintText: '0',
-              listenable: _imageResizer.configNotifier,
-              valueHandler: () =>
-                  _usePixelUnit ? _imageResizer.config.height.toString() : _imageResizer.config.scaleY.toString(),
-              onChanged: heightChanged),
+          Row(children: [
+            OptionInputWidget(
+                title: 'Width',
+                unitLabel: _usePixelUnit ? 'pixels' : '%',
+                allowPattern: RegExp('[0-9]+'),
+                hintText: '0',
+                enabled: !_widthAuto,
+                listenable: _imageResizer.configNotifier,
+                valueHandler: () =>
+                    _usePixelUnit ? _imageResizer.config.width.toString() : _imageResizer.config.scaleX.toString(),
+                onChanged: widthChanged),
+            Checkbox(
+                value: _widthAuto,
+                onChanged: (value) {
+                  if (value! && _heightAuto) {
+                    return;
+                  }
+
+                  _widthAuto = value;
+                  _imageResizer.config.width = 0;
+                  _imageResizer.config.scaleX = _imageResizer.config.scaleY;
+                  setState(() {});
+                }),
+            const Text('auto')
+          ]),
+          Row(children: [
+            OptionInputWidget(
+                title: 'Height',
+                unitLabel: _usePixelUnit ? 'pixels' : '%',
+                allowPattern: RegExp('[0-9]+'),
+                hintText: '0',
+                enabled: !_heightAuto,
+                listenable: _imageResizer.configNotifier,
+                valueHandler: () =>
+                    _usePixelUnit ? _imageResizer.config.height.toString() : _imageResizer.config.scaleY.toString(),
+                onChanged: heightChanged),
+            Checkbox(
+                value: _heightAuto,
+                onChanged: (value) {
+                  if (value! && _widthAuto) {
+                    return;
+                  }
+
+                  _heightAuto = value;
+                  _imageResizer.config.height = 0;
+                  _imageResizer.config.scaleY = _imageResizer.config.scaleX;
+                  setState(() {});
+                }),
+            const Text('auto')
+          ]),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',
@@ -180,15 +215,42 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               iconButtonOnPressed: iconButtonOnPressed,
               onChanged: (value) {
                 _imageResizer.config.destination = value;
-              })
+              }),
+          const Expanded(child: SizedBox()),
+          Row(children: [
+            const Expanded(child: SizedBox()),
+            Padding(
+                padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5),
+                child: TextButton(
+                    onPressed: resizeButtonPressed,
+                    style: const ButtonStyle(
+                        foregroundColor: MaterialStatePropertyAll(Colors.black87),
+                        backgroundColor: MaterialStatePropertyAll(Colors.white),
+                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                            side: BorderSide(color: Colors.black45),
+                            borderRadius: BorderRadius.all(Radius.circular(15))))),
+                    child: const Text('Go')))
+          ])
         ]));
   }
 
   void unitChanged() {
     if (_usePixelUnit) {
       _imageResizer.config.changeUnitToPixel();
+      if (_widthAuto) {
+        _imageResizer.config.width = 0;
+      }
+      if (_heightAuto) {
+        _imageResizer.config.height = 0;
+      }
     } else {
       _imageResizer.config.changeUnitToPercentage();
+      if (_widthAuto) {
+        _imageResizer.config.scaleX = _imageResizer.config.scaleY;
+      }
+      if (_heightAuto) {
+        _imageResizer.config.scaleY = _imageResizer.config.scaleX;
+      }
     }
 
     setState(() {});
@@ -201,6 +263,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     } else {
       value = value.isEmpty ? '100' : value;
       _imageResizer.config.scaleX = int.parse(value);
+      if (_heightAuto) {
+        _imageResizer.config.scaleY = int.parse(value);
+        _imageResizer.configNotifier.emit();
+      }
     }
   }
 
@@ -211,7 +277,53 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     } else {
       value = value.isEmpty ? '100' : value;
       _imageResizer.config.scaleY = int.parse(value);
+      if (_widthAuto) {
+        _imageResizer.config.scaleX = int.parse(value);
+        _imageResizer.configNotifier.emit();
+      }
     }
+  }
+
+  bool checkOptions() {
+    if (_heightAuto && _widthAuto) {
+      return false;
+    }
+
+    if (_imageResizer.fileList.isEmpty) {
+      print('no file');
+      // TODO: show error toast
+      return false;
+    }
+
+    if (_usePixelUnit) {
+      if ((_imageResizer.config.width == 0 && !_widthAuto) || (_imageResizer.config.height == 0 && !_heightAuto)) {
+        print('error size');
+        // TODO: show error toast
+        return false;
+      }
+    } else {
+      if (_imageResizer.config.scaleX == 0 && _imageResizer.config.scaleY == 0) {
+        print('error size');
+        // TODO: show error toast
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  void resizeButtonPressed() {
+    if (!checkOptions()) {
+      return;
+    }
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return ProgressDialog();
+        });
+
+    _imageResizer.resize();
   }
 
   Future<void> iconButtonOnPressed() async {
