@@ -23,7 +23,6 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   int _currentProfileIndex = 0;
   bool _widthAuto = false;
   bool _heightAuto = false;
-  final List<DropdownMenuItem<ImageResizeConfig>> _profileItems = [];
   final List<DropdownMenuItem<ImageFormat>> _formatItems = [];
   final List<DropdownMenuItem<ResizePolicy>> _policyItems = [];
   final List<DropdownMenuItem<Interpolation>> _filterItems = [];
@@ -32,9 +31,6 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   @override
   void initState() {
     super.initState();
-    for (var element in _profileManager.profiles) {
-      _profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
-    }
 
     for (var element in ImageFormat.values) {
       _formatItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
@@ -55,6 +51,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
   @override
   Widget build(BuildContext context) {
+    final List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
+    for (var element in _profileManager.profiles) {
+      profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
+    }
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -65,8 +65,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           Row(children: [
             OptionDropdownWidget<ImageResizeConfig>(
                 title: 'Profile:',
-                value: _profileItems[_currentProfileIndex].value!,
-                items: _profileItems,
+                value: profileItems[_currentProfileIndex].value!,
+                items: profileItems,
                 onChanged: (value) {
                   if (value == null) {
                     return;
