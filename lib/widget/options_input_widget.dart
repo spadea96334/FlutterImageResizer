@@ -45,25 +45,27 @@ class OptionInputWidget extends HookWidget {
       inputFormatters.add(FilteringTextInputFormatter.allow(RegExp('[0-9]+')));
     }
 
-    TextField textField = TextField(
-        controller: _textEditingController,
-        decoration:
-            InputDecoration(isDense: true, contentPadding: const EdgeInsets.symmetric(vertical: 6), hintText: hintText),
-        inputFormatters: inputFormatters,
-        enabled: enabled,
-        onChanged: (value) {
-          if (value.startsWith('0')) {
-            if (ignoreZero) {
-              value = value.replaceFirst('0', '');
-              _textEditingController.text = value;
-              _textEditingController.selection = TextSelection.fromPosition(TextPosition(offset: value.length));
-            }
-          }
+    Widget textField = Theme(
+        data: ThemeData(disabledColor: Colors.grey),
+        child: TextField(
+            controller: _textEditingController,
+            decoration: InputDecoration(
+                isDense: true, contentPadding: const EdgeInsets.symmetric(vertical: 6), hintText: hintText),
+            inputFormatters: inputFormatters,
+            enabled: enabled,
+            onChanged: (value) {
+              if (value.startsWith('0')) {
+                if (ignoreZero) {
+                  value = value.replaceFirst('0', '');
+                  _textEditingController.text = value;
+                  _textEditingController.selection = TextSelection.fromPosition(TextPosition(offset: value.length));
+                }
+              }
 
-          if (onChanged != null) {
-            onChanged!(value);
-          }
-        });
+              if (onChanged != null) {
+                onChanged!(value);
+              }
+            }));
 
     IconButton? iconButton;
     if (icon != null) {
