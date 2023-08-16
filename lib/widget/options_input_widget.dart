@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+// ignore: must_be_immutable
 class OptionInputWidget extends HookWidget {
   OptionInputWidget(
       {super.key,
@@ -31,6 +32,7 @@ class OptionInputWidget extends HookWidget {
   final String Function() valueHandler;
   final bool ignoreZero;
   final bool enabled;
+  bool _runBuild = false;
   String get text => getTextFieldValue();
 
   @override
@@ -77,6 +79,8 @@ class OptionInputWidget extends HookWidget {
           hoverColor: Colors.transparent);
     }
 
+    _runBuild = true;
+
     return ConstrainedBox(
         constraints: const BoxConstraints(minHeight: 48),
         child: Row(children: [
@@ -96,6 +100,9 @@ class OptionInputWidget extends HookWidget {
 
   void valueChanged() {
     String value = valueHandler();
+    if (!_runBuild) {
+      return;
+    }
     if (_textEditingController.text == value) {
       return;
     }
