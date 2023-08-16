@@ -23,34 +23,38 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   int _currentProfileIndex = 0;
   bool _widthAuto = false;
   bool _heightAuto = false;
+  final List<DropdownMenuItem<ImageResizeConfig>> _profileItems = [];
+  final List<DropdownMenuItem<ImageFormat>> _formatItems = [];
+  final List<DropdownMenuItem<ResizePolicy>> _policyItems = [];
+  final List<DropdownMenuItem<Interpolation>> _filterItems = [];
+  final List<DropdownMenuItem<FileTarget>> _fileTargetItems = [];
+
+  @override
+  void initState() {
+    super.initState();
+    for (var element in _profileManager.profiles) {
+      _profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
+    }
+
+    for (var element in ImageFormat.values) {
+      _formatItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
+    for (var element in ResizePolicy.values) {
+      _policyItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
+    for (var element in Interpolation.values) {
+      _filterItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
+    for (var element in FileTarget.values) {
+      _fileTargetItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<DropdownMenuItem<ImageResizeConfig>> profileItems = [];
-    for (var element in _profileManager.profiles) {
-      profileItems.add(DropdownMenuItem<ImageResizeConfig>(value: element, child: Text(element.name)));
-    }
-
-    List<DropdownMenuItem<ImageFormat>> formatItems = [];
-    for (var element in ImageFormat.values) {
-      formatItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
-    }
-
-    List<DropdownMenuItem<ResizePolicy>> policyItems = [];
-    for (var element in ResizePolicy.values) {
-      policyItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
-    }
-
-    List<DropdownMenuItem<Interpolation>> filterItems = [];
-    for (var element in Interpolation.values) {
-      filterItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
-    }
-
-    List<DropdownMenuItem<FileTarget>> fileTargetItems = [];
-    for (var element in FileTarget.values) {
-      fileTargetItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
-    }
-
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -61,8 +65,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           Row(children: [
             OptionDropdownWidget<ImageResizeConfig>(
                 title: 'Profile:',
-                value: profileItems[_currentProfileIndex].value!,
-                items: profileItems,
+                value: _profileItems[_currentProfileIndex].value!,
+                items: _profileItems,
                 onChanged: (value) {
                   if (value == null) {
                     return;
@@ -80,7 +84,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           OptionDropdownWidget<ResizePolicy>(
               title: 'Policy:',
               value: _imageResizer.config.policy,
-              items: policyItems,
+              items: _policyItems,
               onChanged: (value) {
                 if (value == null) {
                   return;
@@ -92,7 +96,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           OptionDropdownWidget<Interpolation>(
               title: 'Filter:',
               value: _imageResizer.config.filter,
-              items: filterItems,
+              items: _filterItems,
               onChanged: (value) {
                 if (value == null) {
                   return;
@@ -174,7 +178,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           OptionDropdownWidget<ImageFormat>(
               title: 'Format:',
               value: _imageResizer.config.imageFormat,
-              items: formatItems,
+              items: _formatItems,
               onChanged: (value) {
                 if (value == null) {
                   return;
@@ -216,7 +220,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               }),
           OptionDropdownWidget<FileTarget>(
               value: _imageResizer.config.target,
-              items: fileTargetItems,
+              items: _fileTargetItems,
               title: 'File target:',
               onChanged: (value) {
                 _imageResizer.config.target = value!;
