@@ -63,16 +63,33 @@ class ResizerThread {
   }
 
   static Future<bool> resizeImage(File file) async {
-    String filename = p.basename(file.path);
-    String baseName = p.basenameWithoutExtension(file.path);
+    String dir = p.dirname(file.path);
+    String baseName = p.basename(file.path);
     String newPath = '';
+
     print('dst: ${config.destination}');
-    if (config.imageFormat == ImageFormat.origin) {
-      newPath = p.join(config.destination, filename);
-    } else {
-      newPath = p.join(config.destination, '$baseName.${config.imageFormat.extension}');
+
+    if (config.imageFormat != ImageFormat.origin) {
+      baseName = p.setExtension(baseName, config.imageFormat.extension);
     }
+
+    if (config.target == FileTarget.origin) {
+      newPath = p.join(dir, baseName);
+    } else {
+      newPath = p.join(config.destination, baseName);
+    }
+
     print('dst2: $newPath');
-    return OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath));
+
+    if (!OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath))) {
+      return false;
+    }
+
+    if (config.target != FileTarget.create && file.path != newPath) {
+      print('delete file ${file.path}');
+      await file.delete();
+    }
+
+    return true;
   }
 }

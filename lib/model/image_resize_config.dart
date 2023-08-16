@@ -38,6 +38,8 @@ enum ResizePolicy {
   final int value;
 }
 
+enum FileTarget { origin, create, move }
+
 @JsonSerializable(explicitToJson: true)
 class ImageResizeProfiles {
   List<ImageResizeConfig> profiles = [];
@@ -61,6 +63,7 @@ class ImageResizeConfig {
   int scaleX = 0;
   int scaleY = 0;
   ResizePolicy policy = ResizePolicy.always;
+  FileTarget target = FileTarget.create;
 
   ImageResizeConfig() {
     destination = SettingManager().documentsPath;
@@ -92,7 +95,8 @@ class ImageResizeConfig {
       ..pngCompression = pngCompression
       ..scaleX = scaleX
       ..scaleY = scaleY
-      ..policy = policy;
+      ..policy = policy
+      ..target = target;
 
     return config;
   }

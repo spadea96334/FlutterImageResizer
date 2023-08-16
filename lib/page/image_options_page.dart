@@ -46,6 +46,11 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       filterItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
     }
 
+    List<DropdownMenuItem<FileTarget>> fileTargetItems = [];
+    for (var element in FileTarget.values) {
+      fileTargetItems.add(DropdownMenuItem(value: element, child: Text(element.name)));
+    }
+
     return Scaffold(
         backgroundColor: Colors.grey[100],
         body: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -208,6 +213,14 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                   setState(() {});
                 }
                 _imageResizer.config.pngCompression = int.parse(value);
+              }),
+          OptionDropdownWidget<FileTarget>(
+              value: _imageResizer.config.target,
+              items: fileTargetItems,
+              title: 'File target:',
+              onChanged: (value) {
+                _imageResizer.config.target = value!;
+                setState(() {});
               }),
           OptionInputWidget(
               title: 'File Destination',
