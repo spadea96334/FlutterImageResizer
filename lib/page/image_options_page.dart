@@ -74,6 +74,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
                   _currentProfileIndex = _profileManager.profiles.indexOf(value);
                   _imageResizer.config = value.copy();
+                  setState(() {});
                 }),
             TooltipButton(icon: const Icon(Icons.add), message: 'add', onPressed: addProfile),
             TooltipButton(icon: const Icon(Icons.save_as), message: 'save', onPressed: saveProfile),
@@ -103,6 +104,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 }
 
                 _imageResizer.config.filter = value;
+                setState(() {});
               }),
           Row(children: [
             const SizedBox(width: 10),
