@@ -14,7 +14,7 @@ class ImagePage extends StatefulWidget {
 }
 
 class _ImagePageState extends State<ImagePage> {
-  final ImageResizer imageResizer = ImageResizer();
+  final ImageResizer _imageResizer = ImageResizer();
 
   @override
   Widget build(BuildContext context) {
@@ -46,9 +46,9 @@ class _ImagePageState extends State<ImagePage> {
                       child: ListView.separated(
                           itemBuilder: (context, index) => buildList(context, index),
                           separatorBuilder: (context, index) => buildSeparator(context, index),
-                          itemCount: imageResizer.fileList.length)))),
+                          itemCount: _imageResizer.fileList.length)))),
           Row(children: [
-            Text('Total : ${imageResizer.fileList.length}'),
+            Text('Total : ${_imageResizer.fileList.length}'),
             const Expanded(child: SizedBox()),
             Padding(
                 padding: const EdgeInsets.only(top: 5, bottom: 5, right: 5),
@@ -70,7 +70,7 @@ class _ImagePageState extends State<ImagePage> {
   }
 
   void clearButtonPressed() {
-    imageResizer.fileList.clear();
+    _imageResizer.fileList.clear();
     setState(() {});
   }
 
@@ -78,7 +78,7 @@ class _ImagePageState extends State<ImagePage> {
     return Container(
         height: 20,
         padding: const EdgeInsets.fromLTRB(4, 2, 4, 2),
-        child: Text(imageResizer.fileList[index].path,
+        child: Text(_imageResizer.fileList[index].path,
             maxLines: 1, overflow: TextOverflow.ellipsis, style: const TextStyle(fontSize: 10)));
   }
 
@@ -91,7 +91,7 @@ class _ImagePageState extends State<ImagePage> {
       print(xfile.path);
       FileSystemEntityType type = FileSystemEntity.typeSync(xfile.path);
       if (type == FileSystemEntityType.file) {
-        imageResizer.fileList.add(File(xfile.path));
+        _imageResizer.fileList.add(File(xfile.path));
       } else if (type == FileSystemEntityType.directory) {
         getDictionaryFile(xfile.path);
       }
@@ -105,7 +105,7 @@ class _ImagePageState extends State<ImagePage> {
     for (FileSystemEntity entity in entities) {
       FileSystemEntityType type = FileSystemEntity.typeSync(entity.path);
       if (type == FileSystemEntityType.file) {
-        imageResizer.fileList.add(File(entity.path));
+        _imageResizer.fileList.add(File(entity.path));
       } else if (type == FileSystemEntityType.directory) {
         getDictionaryFile(entity.path);
       }
