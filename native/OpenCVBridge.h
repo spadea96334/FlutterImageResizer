@@ -24,6 +24,8 @@ struct Config {
 
 // EXPORT bool resizeImage(char *path, char *dst, int width, int height, double scaleX, double scaleY, int interpolation);
 EXPORT bool resizeImage(Config *config);
+EXPORT void initFPrint(void (*printCallback)(char *));
+
 #ifdef _WIN32
 }
 #endif

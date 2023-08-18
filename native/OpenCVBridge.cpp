@@ -4,6 +4,7 @@
 
 bool checkNeedResize(cv::Mat image, Config *config);
 cv::Size calSize(cv::Mat image, Config *config);
+void (*fPrint)(char *);
 
 bool resizeImage(Config *config) {
   cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);
@@ -76,3 +77,5 @@ bool checkNeedResize(cv::Mat image, Config *config) {
 
   return false;
 }
+
+void initFPrint(void (*printCallback)(char *)) { fPrint = printCallback; }
