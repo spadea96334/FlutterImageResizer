@@ -33,6 +33,10 @@ class ImageResizer {
     ResizerThread.config = config;
     print('initing');
     List<Future> threadFutures = [];
+    if (fileList.length < count) {
+      count = fileList.length;
+    }
+
     for (int i = 0; i < count; i++) {
       print('create $i');
       ResizerThread thread = ResizerThread();
