@@ -20,8 +20,6 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   final ImageResizer _imageResizer = ImageResizer();
   final SettingManager _profileManager = SettingManager();
   int _currentProfileIndex = 0;
-  bool _widthAuto = false;
-  bool _heightAuto = false;
   final List<DropdownMenuItem<ImageFormat>> _formatItems = [];
   final List<DropdownMenuItem<ResizePolicy>> _policyItems = [];
   final List<DropdownMenuItem<Interpolation>> _filterItems = [];
@@ -132,22 +130,27 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           Row(children: [
             OptionInputWidget(
                 title: 'Width',
-                unitLabel: _usePixelUnit ? 'pixels' : '%',
+                unitLabel: _imageResizer.config.unit == SizeUnit.pixel ? 'pixels' : '%',
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '0',
-                enabled: !_widthAuto,
+                enabled: !_imageResizer.config.widthAuto,
                 listenable: _imageResizer.configNotifier,
                 valueHandler: () => _imageResizer.config.width.toString(),
                 onChanged: widthChanged),
             Checkbox(
-                value: _widthAuto,
+                value: _imageResizer.config.widthAuto,
                 onChanged: (value) {
-                  if (value! && _heightAuto) {
+                  if (value! && _imageResizer.config.heightAuto) {
                     return;
                   }
 
-                  _widthAuto = value;
-                  _imageResizer.config.width = 0;
+                  _imageResizer.config.widthAuto = value;
+                  if (_imageResizer.config.unit == SizeUnit.pixel) {
+                    _imageResizer.config.width = 0;
+                  } else {
+                    _imageResizer.config.width = _imageResizer.config.height;
+                  }
+
                   setState(() {});
                 }),
             const Text('auto')
@@ -155,22 +158,28 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           Row(children: [
             OptionInputWidget(
                 title: 'Height',
-                unitLabel: _usePixelUnit ? 'pixels' : '%',
+                unitLabel: _imageResizer.config.unit == SizeUnit.pixel ? 'pixels' : '%',
                 allowPattern: RegExp('[0-9]+'),
                 hintText: '0',
-                enabled: !_heightAuto,
+                enabled: !_imageResizer.config.heightAuto,
                 listenable: _imageResizer.configNotifier,
                 valueHandler: () => _imageResizer.config.height.toString(),
                 onChanged: heightChanged),
             Checkbox(
-                value: _heightAuto,
+                value: _imageResizer.config.heightAuto,
                 onChanged: (value) {
-                  if (value! && _widthAuto) {
+                  if (value! && _imageResizer.config.widthAuto) {
                     return;
                   }
 
-                  _heightAuto = value;
-                  _imageResizer.config.height = 0;
+                  _imageResizer.config.heightAuto = value;
+
+                  if (_imageResizer.config.unit == SizeUnit.pixel) {
+                    _imageResizer.config.height = 0;
+                  } else {
+                    _imageResizer.config.height = _imageResizer.config.width;
+                  }
+
                   setState(() {});
                 }),
             const Text('auto')
@@ -258,14 +267,14 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   }
 
   void unitChanged() {
-    if (_widthAuto) {
+    if (_imageResizer.config.widthAuto) {
       if (_imageResizer.config.unit == SizeUnit.pixel) {
         _imageResizer.config.width = 0;
       } else {
         _imageResizer.config.width = _imageResizer.config.height;
       }
     }
-    if (_heightAuto) {
+    if (_imageResizer.config.heightAuto) {
       if (_imageResizer.config.unit == SizeUnit.pixel) {
         _imageResizer.config.height = 0;
       } else {
@@ -280,7 +289,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     value = value.isEmpty ? '0' : value;
     _imageResizer.config.width = int.parse(value);
 
-    if (_imageResizer.config.unit == SizeUnit.scale && _heightAuto) {
+    if (_imageResizer.config.unit == SizeUnit.scale && _imageResizer.config.heightAuto) {
       _imageResizer.config.height = _imageResizer.config.width;
       _imageResizer.configChanged();
     }
@@ -290,14 +299,14 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     value = value.isEmpty ? '0' : value;
     _imageResizer.config.height = int.parse(value);
 
-    if (_imageResizer.config.unit == SizeUnit.scale && _widthAuto) {
+    if (_imageResizer.config.unit == SizeUnit.scale && _imageResizer.config.widthAuto) {
       _imageResizer.config.width = _imageResizer.config.height;
       _imageResizer.configChanged();
     }
   }
 
   bool checkOptions() {
-    if (_heightAuto && _widthAuto) {
+    if (_imageResizer.config.heightAuto && _imageResizer.config.widthAuto) {
       return false;
     }
 
@@ -307,7 +316,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       return false;
     }
 
-    if ((_imageResizer.config.width == 0 && !_widthAuto) || (_imageResizer.config.height == 0 && !_heightAuto)) {
+    if ((_imageResizer.config.width == 0 && !_imageResizer.config.widthAuto) ||
+        (_imageResizer.config.height == 0 && !_imageResizer.config.heightAuto)) {
       print('error size');
       // TODO: show error toast
       return false;

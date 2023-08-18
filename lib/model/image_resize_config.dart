@@ -71,6 +71,8 @@ class ImageResizeConfig {
   int pngCompression = 1;
   ResizePolicy policy = ResizePolicy.always;
   FileTarget target = FileTarget.create;
+  bool widthAuto = false;
+  bool heightAuto = false;
 
   ImageResizeConfig() {
     destination = SettingManager().documentsPath;
@@ -88,7 +90,9 @@ class ImageResizeConfig {
       ..jpgQuality = jpgQuality
       ..pngCompression = pngCompression
       ..policy = policy
-      ..target = target;
+      ..target = target
+      ..widthAuto = widthAuto
+      ..heightAuto = heightAuto;
 
     return config;
   }

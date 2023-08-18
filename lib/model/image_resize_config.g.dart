@@ -30,7 +30,9 @@ ImageResizeConfig _$ImageResizeConfigFromJson(Map<String, dynamic> json) =>
       ..jpgQuality = json['jpgQuality'] as int
       ..pngCompression = json['pngCompression'] as int
       ..policy = $enumDecode(_$ResizePolicyEnumMap, json['policy'])
-      ..target = $enumDecode(_$FileTargetEnumMap, json['target']);
+      ..target = $enumDecode(_$FileTargetEnumMap, json['target'])
+      ..widthAuto = json['widthAuto'] as bool
+      ..heightAuto = json['heightAuto'] as bool;
 
 Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
     <String, dynamic>{
@@ -45,6 +47,8 @@ Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
       'pngCompression': instance.pngCompression,
       'policy': _$ResizePolicyEnumMap[instance.policy]!,
       'target': _$FileTargetEnumMap[instance.target]!,
+      'widthAuto': instance.widthAuto,
+      'heightAuto': instance.heightAuto,
     };
 
 const _$SizeUnitEnumMap = {
