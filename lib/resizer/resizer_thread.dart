@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
+import 'package:ffi/ffi.dart';
 import 'package:image_resizer/opencv_bridge.dart';
 import 'package:path/path.dart' as p;
 
@@ -81,7 +82,11 @@ class ResizerThread {
 
     print('dst2: $newPath');
 
-    if (!OpenCVBridge().reiszeImage(config.toNativeStruct(file.path, newPath))) {
+    var cConfig = config.toNativeStruct(file.path, newPath);
+    bool result = OpenCVBridge().reiszeImage(cConfig);
+    calloc.free(cConfig);
+
+    if (!result) {
       return false;
     }
 
