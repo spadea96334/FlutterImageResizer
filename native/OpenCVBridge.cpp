@@ -17,7 +17,12 @@ bool resizeImage(Config *config) {
 
   if (checkNeedResize(image, config)) {
     cv::Mat resizedImage;
-    cv::resize(image, resizedImage, size, config->scaleX, config->scaleY, config->filter);
+    if (config->unit == pixel) {
+      cv::resize(image, resizedImage, size, 0, 0, config->filter);
+    } else {
+      cv::resize(image, resizedImage, size, (double)config->width / 100, (double)config->height / 100, config->filter);
+    }
+
     image = resizedImage;
   }
 
@@ -29,20 +34,24 @@ bool resizeImage(Config *config) {
 cv::Size calSize(cv::Mat image, Config *config) {
   cv::Size size;
 
+  if (config->unit == scale) {
+    return size;
+  }
+
   if (config->width != 0 && config->height != 0) {
     size.width = config->width;
     size.height = config->height;
-  } else if (config->width == 0 && config->height == 0) {
-  } else {
-    if (config->width == 0) {
-      double scale = (double)config->height / image.size().height;
-      size.height = config->height;
-      size.width = cv::saturate_cast<int>(image.size().width * scale);
-    } else if (config->height == 0) {
-      double scale = (double)config->width / image.size().width;
-      size.width = config->width;
-      size.height = cv::saturate_cast<int>(image.size().height * scale);
-    }
+    return size;
+  }
+
+  if (config->width == 0) {
+    double scale = (double)config->height / image.size().height;
+    size.height = config->height;
+    size.width = cv::saturate_cast<int>(image.size().width * scale);
+  } else if (config->height == 0) {
+    double scale = (double)config->width / image.size().width;
+    size.width = config->width;
+    size.height = cv::saturate_cast<int>(image.size().height * scale);
   }
 
   return size;

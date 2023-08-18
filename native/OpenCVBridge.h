@@ -8,14 +8,14 @@ extern "C" {
 #endif
 
 enum resizePolicy { always, reduce, enlarge };
+enum sizeUnit { pixel, scale };
 
 struct Config {
   char *file;
   char *dst;
+  sizeUnit unit;
   int width;
   int height;
-  double scaleX;
-  double scaleY;
   int filter;
   int jpgQuality;
   int pngCompression;

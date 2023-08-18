@@ -38,6 +38,14 @@ enum ResizePolicy {
   final int value;
 }
 
+enum SizeUnit {
+  pixel(0),
+  scale(1);
+
+  const SizeUnit(this.value);
+  final int value;
+}
+
 enum FileTarget { origin, create, move }
 
 @JsonSerializable(explicitToJson: true)
@@ -54,14 +62,13 @@ class ImageResizeProfiles {
 class ImageResizeConfig {
   String name = '';
   String destination = '';
+  SizeUnit unit = SizeUnit.pixel;
   int height = 0;
   int width = 0;
   ImageFormat imageFormat = ImageFormat.origin;
   Interpolation filter = Interpolation.area;
   int jpgQuality = 95;
   int pngCompression = 1;
-  int scaleX = 0;
-  int scaleY = 0;
   ResizePolicy policy = ResizePolicy.always;
   FileTarget target = FileTarget.create;
 
@@ -69,32 +76,17 @@ class ImageResizeConfig {
     destination = SettingManager().documentsPath;
   }
 
-  void changeUnitToPixel() {
-    width = scaleX;
-    height = scaleY;
-    scaleX = 0;
-    scaleY = 0;
-  }
-
-  void changeUnitToPercentage() {
-    scaleX = width;
-    scaleY = height;
-    width = 0;
-    height = 0;
-  }
-
   ImageResizeConfig copy() {
     ImageResizeConfig config = ImageResizeConfig()
       ..name = name
       ..destination = destination
+      ..unit = unit
       ..height = height
       ..width = width
       ..imageFormat = imageFormat
       ..filter = filter
       ..jpgQuality = jpgQuality
       ..pngCompression = pngCompression
-      ..scaleX = scaleX
-      ..scaleY = scaleY
       ..policy = policy
       ..target = target;
 
@@ -103,21 +95,15 @@ class ImageResizeConfig {
 
   Pointer<ImageResizeConfigC> toNativeStruct(String file, String dst) {
     Pointer<ImageResizeConfigC> struct = calloc<ImageResizeConfigC>();
-    if (scaleX != 0 || scaleY != 0) {
-      struct.ref.height = 0;
-      struct.ref.width = 0;
-    } else {
-      struct.ref.height = height;
-      struct.ref.width = width;
-    }
 
+    struct.ref.unit = unit.value;
+    struct.ref.height = height;
+    struct.ref.width = width;
     struct.ref.filter = filter.value;
     struct.ref.jpgQuality = jpgQuality;
     struct.ref.pngCompression = pngCompression;
     struct.ref.file = file.toNativeUtf8();
     struct.ref.dst = dst.toNativeUtf8();
-    struct.ref.scaleX = scaleX / 100;
-    struct.ref.scaleY = scaleY / 100;
     struct.ref.policy = policy.value;
 
     return struct;
@@ -131,13 +117,11 @@ class ImageResizeConfigC extends Struct {
   external Pointer<Utf8> file;
   external Pointer<Utf8> dst;
   @Int()
+  external int unit;
+  @Int()
   external int width;
   @Int()
   external int height;
-  @Double()
-  external double scaleX;
-  @Double()
-  external double scaleY;
   @Int()
   external int filter;
   @Int()

@@ -22,14 +22,13 @@ ImageResizeConfig _$ImageResizeConfigFromJson(Map<String, dynamic> json) =>
     ImageResizeConfig()
       ..name = json['name'] as String
       ..destination = json['destination'] as String
+      ..unit = $enumDecode(_$SizeUnitEnumMap, json['unit'])
       ..height = json['height'] as int
       ..width = json['width'] as int
       ..imageFormat = $enumDecode(_$ImageFormatEnumMap, json['imageFormat'])
       ..filter = $enumDecode(_$InterpolationEnumMap, json['filter'])
       ..jpgQuality = json['jpgQuality'] as int
       ..pngCompression = json['pngCompression'] as int
-      ..scaleX = json['scaleX'] as int
-      ..scaleY = json['scaleY'] as int
       ..policy = $enumDecode(_$ResizePolicyEnumMap, json['policy'])
       ..target = $enumDecode(_$FileTargetEnumMap, json['target']);
 
@@ -37,17 +36,21 @@ Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
     <String, dynamic>{
       'name': instance.name,
       'destination': instance.destination,
+      'unit': _$SizeUnitEnumMap[instance.unit]!,
       'height': instance.height,
       'width': instance.width,
       'imageFormat': _$ImageFormatEnumMap[instance.imageFormat]!,
       'filter': _$InterpolationEnumMap[instance.filter]!,
       'jpgQuality': instance.jpgQuality,
       'pngCompression': instance.pngCompression,
-      'scaleX': instance.scaleX,
-      'scaleY': instance.scaleY,
       'policy': _$ResizePolicyEnumMap[instance.policy]!,
       'target': _$FileTargetEnumMap[instance.target]!,
     };
+
+const _$SizeUnitEnumMap = {
+  SizeUnit.pixel: 'pixel',
+  SizeUnit.scale: 'scale',
+};
 
 const _$ImageFormatEnumMap = {
   ImageFormat.jpg: 'jpg',
