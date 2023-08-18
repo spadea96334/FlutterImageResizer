@@ -6,13 +6,13 @@ import '../model/image_resize_config.dart';
 import 'resizer_thread.dart';
 
 class ImageResizer {
-  final List<ResizerThread> _availableThreads = [];
+  final List<ResizerThread> _idleThreads = [];
   static final ImageResizer _singleton = ImageResizer._private();
   List<File> fileList = [];
   ImageResizeConfig config = ImageResizeConfig();
   EventNotifier configNotifier = EventNotifier();
   EventNotifier progressNotifier = EventNotifier();
-  Completer<void>? _availableThreadCompleter;
+  Completer<void>? _idleThreadCompleter;
   int processCount = 0;
   bool _processing = false;
   int threadCount = Platform.numberOfProcessors;
@@ -41,7 +41,7 @@ class ImageResizer {
       print('create $i');
       ResizerThread thread = ResizerThread();
       threadFutures.add(thread.initIsolate());
-      _availableThreads.add(thread);
+      _idleThreads.add(thread);
     }
 
     await Future.wait(threadFutures);
@@ -73,34 +73,34 @@ class ImageResizer {
     for (int i = 0; i < fileList.length; i++) {
       File file = fileList[i];
       print('get thread $i');
-      ResizerThread thread = await getAvailableThread();
+      ResizerThread thread = await getIdleThread();
       print('get thread succ');
       thread.resize(file).then((value) {
         processCount++;
         progressNotifier.emit();
-        _availableThreads.add(thread);
-        _availableThreadCompleter?.complete();
+        _idleThreads.add(thread);
+        _idleThreadCompleter?.complete();
 
         if (processCount == fileList.length) {
           _processing = false;
-          _availableThreads.clear();
+          _idleThreads.clear();
         }
       });
     }
   }
 
-  Future<ResizerThread> getAvailableThread() async {
-    if (_availableThreads.isNotEmpty) {
-      return _availableThreads.removeAt(0);
+  Future<ResizerThread> getIdleThread() async {
+    if (_idleThreads.isNotEmpty) {
+      return _idleThreads.removeAt(0);
     }
 
-    assert(_availableThreadCompleter == null);
+    assert(_idleThreadCompleter == null);
     print('wait thread');
-    _availableThreadCompleter = Completer();
-    await _availableThreadCompleter!.future;
-    _availableThreadCompleter = null;
+    _idleThreadCompleter = Completer();
+    await _idleThreadCompleter!.future;
+    _idleThreadCompleter = null;
 
-    return _availableThreads.removeAt(0);
+    return _idleThreads.removeAt(0);
   }
 
   void configChanged() {
