@@ -242,6 +242,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
               unitLabel: '',
               icon: const Icon(Icons.folder_open),
               textFieldWidth: 300,
+              enabled: (_imageResizer.config.target != FileTarget.origin),
               listenable: _imageResizer.configNotifier,
               valueHandler: () => _imageResizer.config.destination,
               iconButtonOnPressed: iconButtonOnPressed,
@@ -341,6 +342,10 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
   }
 
   Future<void> iconButtonOnPressed() async {
+    if (_imageResizer.config.target == FileTarget.origin) {
+      return;
+    }
+
     String? result = await getDirectoryPath();
     if (result == null) {
       return;
