@@ -3,6 +3,9 @@ project(native_library VERSION 1.0.0 LANGUAGES CXX)
 
 set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} /MD")
 set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /MD")
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
 include_directories(../library/opencv/windows/include)
 link_directories(../library/opencv/windows/)
 add_library(native_library SHARED OpenCVBridge.cpp)

@@ -1,5 +1,6 @@
 #include "OpenCVBridge.h"
 
+#include <filesystem>
 #include <opencv2/opencv.hpp>
 
 bool checkNeedResize(cv::Mat image, Config *config);
@@ -7,7 +8,10 @@ cv::Size calSize(cv::Mat image, Config *config);
 void (*fPrint)(char *);
 
 bool resizeImage(Config *config) {
-  cv::Mat image = cv::imread(config->file, cv::IMREAD_UNCHANGED);
+  std::filesystem::path filePath{std::filesystem::u8path(config->file)};
+  std::filesystem::path dstPath{std::filesystem::u8path(config->dst)};
+
+  cv::Mat image = cv::imread(filePath.string(), cv::IMREAD_UNCHANGED);
 
   if (image.data == NULL) {
     return false;
@@ -28,7 +32,7 @@ bool resizeImage(Config *config) {
 
   std::vector<int> compressionParams;
 
-  return cv::imwrite(config->dst, image, compressionParams);
+  return cv::imwrite(dstPath.string(), image, compressionParams);
 }
 
 cv::Size calSize(cv::Mat image, Config *config) {
