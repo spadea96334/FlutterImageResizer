@@ -8,7 +8,9 @@
 #include <locale>
 #endif
 
+#include <codecvt>
 #include <iostream>
+#include <locale>
 #include <opencv2/opencv.hpp>
 
 bool checkNeedResize(cv::Mat image, Config *config);
