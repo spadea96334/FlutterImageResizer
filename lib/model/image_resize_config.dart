@@ -106,8 +106,8 @@ class ImageResizeConfig {
     struct.ref.filter = filter.value;
     struct.ref.jpgQuality = jpgQuality;
     struct.ref.pngCompression = pngCompression;
-    struct.ref.file = file.toNativeUtf8();
-    struct.ref.dst = dst.toNativeUtf8();
+    struct.ref.file = file.toNativeUtf16();
+    struct.ref.dst = dst.toNativeUtf16();
     struct.ref.policy = policy.value;
 
     return struct;
@@ -118,8 +118,8 @@ class ImageResizeConfig {
 }
 
 class ImageResizeConfigC extends Struct {
-  external Pointer<Utf8> file;
-  external Pointer<Utf8> dst;
+  external Pointer<Utf16> file;
+  external Pointer<Utf16> dst;
   @Int()
   external int unit;
   @Int()
