@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'dart:io';
-import 'package:ffi/ffi.dart';
 import 'model/image_resize_config.dart';
 
 typedef ResizeImageNative = Bool Function(Pointer<ImageResizeConfigC>);

@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:ffi/ffi.dart';
-import 'package:image_resizer/opencv_bridge.dart';
+import 'package:image_resizer/native_bridge.dart';
 import 'package:path/path.dart' as p;
 
 import '../model/image_resize_config.dart';
