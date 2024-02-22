@@ -96,7 +96,7 @@ bool writeFile(cv::Mat image, Config *config) {
   }
 
   std::vector<uchar> encode;
-  std::filesystem::path filePath(config->file);
+  std::filesystem::path filePath(config->dst);
   cv::imencode(filePath.extension().string().c_str(), image, encode);
   FILE *f = _wfopen(config->dst, L"wb");
 

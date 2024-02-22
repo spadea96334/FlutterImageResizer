@@ -71,7 +71,7 @@ class ResizerThread {
     print('dst: ${config.destination}');
 
     if (config.imageFormat != ImageFormat.origin) {
-      baseName = p.setExtension(baseName, config.imageFormat.extension);
+      baseName = p.setExtension(baseName, ".${config.imageFormat.extension}");
     }
 
     if (config.target == FileTarget.origin) {
