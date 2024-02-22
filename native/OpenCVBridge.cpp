@@ -2,10 +2,9 @@
 
 #ifdef _WIN32
 #include <Windows.h>
-
-#include <filesystem>
 #endif
 
+#include <filesystem>
 #include <iostream>
 #include <opencv2/opencv.hpp>
 
@@ -14,6 +13,7 @@ cv::Size calSize(cv::Mat image, Config *config);
 void (*fPrint)(char *);
 cv::Mat readFile(Config *config);
 bool writeFile(cv::Mat image, Config *config);
+std::vector<int> spawnWriteParams(Config *config);
 
 bool resizeImage(Config *config) {
   cv::Mat image;
@@ -72,9 +72,9 @@ cv::Mat readFile(Config *config) {
 }
 
 bool cvWriteFile(cv::Mat image, Config *config) {
-  std::vector<int> compressionParams;
+  std::vector<int> params = spawnWriteParams(config);
 
-  return cv::imwrite(config->dst, image, compressionParams);
+  return cv::imwrite(config->dst, image, params);
 }
 
 bool writeFile(cv::Mat image, Config *config) {
@@ -88,7 +88,9 @@ bool writeFile(cv::Mat image, Config *config) {
 
   std::vector<uchar> encode;
   std::filesystem::path filePath(config->dst_utf16);
-  cv::imencode(filePath.extension().string().c_str(), image, encode);
+  std::vector<int> params = spawnWriteParams(config);
+
+  cv::imencode(filePath.extension().string().c_str(), image, encode, params);
   FILE *f = _wfopen(config->dst_utf16, L"wb");
 
   if (f == NULL) {
@@ -156,6 +158,22 @@ bool checkNeedResize(cv::Mat image, Config *config) {
   }
 
   return false;
+}
+
+std::vector<int> spawnWriteParams(Config *config) {
+  std::vector<int> params;
+  std::filesystem::path filePath(config->dst);
+  const char *ext = filePath.extension().c_str();
+
+  if (ext == ".png") {
+    params.push_back(cv::IMWRITE_PNG_COMPRESSION);
+    params.push_back(config->pngCompression);
+  } else if (ext == ".jpg") {
+    params.push_back(cv::IMWRITE_JPEG_QUALITY);
+    params.push_back(config->jpgQuality);
+  }
+
+  return params;
 }
 
 void initFPrint(void (*printCallback)(char *)) { fPrint = printCallback; }
