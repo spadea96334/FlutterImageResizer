@@ -68,8 +68,6 @@ class ResizerThread {
     String baseName = p.basename(file.path);
     String newPath = '';
 
-    print('dst: ${config.destination}');
-
     if (config.imageFormat != ImageFormat.origin) {
       baseName = p.setExtension(baseName, ".${config.imageFormat.extension}");
     }
@@ -80,8 +78,6 @@ class ResizerThread {
       newPath = p.join(config.destination, baseName);
     }
 
-    print('dst2: $newPath');
-
     var cConfig = config.toNativeStruct(file.path, newPath);
     bool result = OpenCVBridge().reiszeImage(cConfig);
     calloc.free(cConfig);
@@ -91,7 +87,6 @@ class ResizerThread {
     }
 
     if (config.target != FileTarget.create && file.path != newPath) {
-      print('delete file ${file.path}');
       await file.delete();
     }
 

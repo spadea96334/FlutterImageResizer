@@ -88,7 +88,6 @@ class _ImagePageState extends State<ImagePage> {
 
   void onDropDone(DropDoneDetails details) {
     for (XFile xfile in details.files) {
-      print(xfile.path);
       FileSystemEntityType type = FileSystemEntity.typeSync(xfile.path);
       if (type == FileSystemEntityType.file) {
         _imageResizer.fileList.add(File(xfile.path));

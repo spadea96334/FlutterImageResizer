@@ -107,7 +107,6 @@ class OptionInputWidget extends HookWidget {
       return;
     }
 
-    print(title);
     _textEditingController.text = value;
   }
 }

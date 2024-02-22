@@ -31,21 +31,18 @@ class ImageResizer {
 
   Future<void> initThread(int count) async {
     ResizerThread.config = config;
-    print('initing');
     List<Future> threadFutures = [];
     if (fileList.length < count) {
       count = fileList.length;
     }
 
     for (int i = 0; i < count; i++) {
-      print('create $i');
       ResizerThread thread = ResizerThread();
       threadFutures.add(thread.initIsolate());
       _idleThreads.add(thread);
     }
 
     await Future.wait(threadFutures);
-    print('init successed');
   }
 
   void checkDestinationPath() {
@@ -72,9 +69,7 @@ class ImageResizer {
 
     for (int i = 0; i < fileList.length; i++) {
       File file = fileList[i];
-      print('get thread $i');
       ResizerThread thread = await getIdleThread();
-      print('get thread succ');
       thread.resize(file).then((value) {
         processCount++;
         progressNotifier.emit();
@@ -95,7 +90,6 @@ class ImageResizer {
     }
 
     assert(_idleThreadCompleter == null);
-    print('wait thread');
     _idleThreadCompleter = Completer();
     await _idleThreadCompleter!.future;
     _idleThreadCompleter = null;
