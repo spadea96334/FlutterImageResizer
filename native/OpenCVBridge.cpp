@@ -3,14 +3,10 @@
 #ifdef _WIN32
 #include <Windows.h>
 
-#include <codecvt>
 #include <filesystem>
-#include <locale>
 #endif
 
-#include <codecvt>
 #include <iostream>
-#include <locale>
 #include <opencv2/opencv.hpp>
 
 bool checkNeedResize(cv::Mat image, Config *config);
@@ -18,7 +14,6 @@ cv::Size calSize(cv::Mat image, Config *config);
 void (*fPrint)(char *);
 cv::Mat readFile(Config *config);
 bool writeFile(cv::Mat image, Config *config);
-const char *wcharToChar(wchar_t *wstr);
 
 bool resizeImage(Config *config) {
   cv::Mat image;
@@ -45,10 +40,7 @@ bool resizeImage(Config *config) {
   return writeFile(image, config);
 }
 
-cv::Mat cvReadFile(Config *config) {
-  const char *file = wcharToChar(config->file);
-  return cv::imread(file, cv::IMREAD_UNCHANGED);
-}
+cv::Mat cvReadFile(Config *config) { return cv::imread(config->file, cv::IMREAD_UNCHANGED); }
 
 cv::Mat readFile(Config *config) {
 #ifndef _WIN32
@@ -59,7 +51,7 @@ cv::Mat readFile(Config *config) {
     return cvReadFile(config);
   }
 
-  FILE *f = _wfopen(config->file, L"rb");
+  FILE *f = _wfopen(config->file_utf16, L"rb");
   if (f == NULL) {
     return cv::Mat();
   }
@@ -80,10 +72,9 @@ cv::Mat readFile(Config *config) {
 }
 
 bool cvWriteFile(cv::Mat image, Config *config) {
-  const char *dst = wcharToChar(config->dst);
   std::vector<int> compressionParams;
 
-  return cv::imwrite(dst, image, compressionParams);
+  return cv::imwrite(config->dst, image, compressionParams);
 }
 
 bool writeFile(cv::Mat image, Config *config) {
@@ -96,9 +87,9 @@ bool writeFile(cv::Mat image, Config *config) {
   }
 
   std::vector<uchar> encode;
-  std::filesystem::path filePath(config->dst);
+  std::filesystem::path filePath(config->dst_utf16);
   cv::imencode(filePath.extension().string().c_str(), image, encode);
-  FILE *f = _wfopen(config->dst, L"wb");
+  FILE *f = _wfopen(config->dst_utf16, L"wb");
 
   if (f == NULL) {
     return false;
@@ -165,14 +156,6 @@ bool checkNeedResize(cv::Mat image, Config *config) {
   }
 
   return false;
-}
-
-const char *wcharToChar(wchar_t *wstr) {
-  std::wstring wstring(wstr);
-  std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> convert;
-  std::string string = convert.to_bytes(wstring);
-
-  return string.c_str();
 }
 
 void initFPrint(void (*printCallback)(char *)) { fPrint = printCallback; }

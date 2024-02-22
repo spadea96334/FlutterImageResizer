@@ -11,8 +11,10 @@ enum resizePolicy { always, reduce, enlarge };
 enum sizeUnit { pixel, scale };
 
 struct Config {
-  wchar_t *file;
-  wchar_t *dst;
+  char *file;
+  char *dst;
+  wchar_t *file_utf16;
+  wchar_t *dst_utf16;
   sizeUnit unit;
   int width;
   int height;
