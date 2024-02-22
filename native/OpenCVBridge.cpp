@@ -53,8 +53,7 @@ cv::Mat cvReadFile(Config *config) {
 cv::Mat readFile(Config *config) {
 #ifndef _WIN32
   return cvReadFile(config);
-#endif
-
+#else
   UINT code = GetACP();
   if (code == 65001) {
     return cvReadFile(config);
@@ -75,7 +74,9 @@ cv::Mat readFile(Config *config) {
 
   delete[] buff;
   fclose(f);
+
   return mat;
+#endif
 }
 
 bool cvWriteFile(cv::Mat image, Config *config) {
@@ -87,9 +88,8 @@ bool cvWriteFile(cv::Mat image, Config *config) {
 
 bool writeFile(cv::Mat image, Config *config) {
 #ifndef _WIN32
-  return cvWriteFile(config);
-#endif
-
+  return cvWriteFile(image, config);
+#else
   UINT code = GetACP();
   if (code == 65001) {
     return cvWriteFile(image, config);
@@ -108,6 +108,7 @@ bool writeFile(cv::Mat image, Config *config) {
   fclose(f);
 
   return true;
+#endif
 }
 
 cv::Size calSize(cv::Mat image, Config *config) {
