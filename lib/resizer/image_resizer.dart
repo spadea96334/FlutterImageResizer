@@ -6,16 +6,21 @@ import '../model/image_resize_config.dart';
 import 'resizer_thread.dart';
 
 class ImageResizer {
-  final List<ResizerThread> _idleThreads = [];
   static final ImageResizer _singleton = ImageResizer._private();
+
   List<File> fileList = [];
   ImageResizeConfig config = ImageResizeConfig();
   EventNotifier configNotifier = EventNotifier();
   EventNotifier progressNotifier = EventNotifier();
-  Completer<void>? _idleThreadCompleter;
   int processCount = 0;
-  bool _processing = false;
+  bool get initFailed => _initFailed;
+  bool get processing => _processing;
   int threadCount = Platform.numberOfProcessors;
+
+  final List<ResizerThread> _idleThreads = [];
+  Completer<void>? _idleThreadCompleter;
+  bool _processing = false;
+  bool _initFailed = false;
 
   ImageResizer._private();
 
@@ -29,7 +34,7 @@ class ImageResizer {
     threadCount = int.tryParse(value) ?? Platform.numberOfProcessors;
   }
 
-  Future<void> initThread(int count) async {
+  Future<bool> initThread(int count) async {
     ResizerThread.config = config;
     List<Future> threadFutures = [];
     if (fileList.length < count) {
@@ -38,11 +43,19 @@ class ImageResizer {
 
     for (int i = 0; i < count; i++) {
       ResizerThread thread = ResizerThread();
-      threadFutures.add(thread.initIsolate());
+      threadFutures.add(thread.init());
       _idleThreads.add(thread);
     }
 
     await Future.wait(threadFutures);
+
+    for (ResizerThread thread in _idleThreads) {
+      if (thread.initFailed) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   void checkDestinationPath() {
@@ -62,9 +75,17 @@ class ImageResizer {
       return;
     }
 
+    _initFailed = false;
     _processing = true;
     processCount = 0;
-    await initThread(threadCount);
+
+    if (!await initThread(threadCount)) {
+      _initFailed = true;
+      progressNotifier.emit();
+
+      return;
+    }
+
     checkDestinationPath();
 
     for (int i = 0; i < fileList.length; i++) {

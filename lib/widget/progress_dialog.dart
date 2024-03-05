@@ -16,7 +16,12 @@ class ProgressDialog extends StatelessWidget {
                 listenable: _imageResizer.progressNotifier,
                 builder: (context, child) {
                   double progress = _imageResizer.processCount / _imageResizer.fileList.length;
-                  Text label = progress == 1 ? const Text('Successed!') : const Text('Processing...');
+                  Text label;
+                  if (_imageResizer.initFailed) {
+                    label = const Text('Init failed');
+                  } else {
+                    label = progress == 1 ? const Text('Successed!') : const Text('Processing...');
+                  }
 
                   return Column(
                       mainAxisSize: MainAxisSize.min,
@@ -32,7 +37,7 @@ class ProgressDialog extends StatelessWidget {
                           const Expanded(child: SizedBox()),
                           TextButton(
                               onPressed: () {
-                                if (progress != 1) {
+                                if (progress != 1 && !_imageResizer.initFailed) {
                                   return;
                                 }
 

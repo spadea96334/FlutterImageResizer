@@ -332,6 +332,16 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
       return;
     }
 
+    if (_imageResizer.processing) {
+      showDialog(
+          context: context,
+          builder: (context) {
+            return const Dialog(child: Text('Alerdy processing'));
+          });
+
+      return;
+    }
+
     showDialog(
         context: context,
         builder: (context) {

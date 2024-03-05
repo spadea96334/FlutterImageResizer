@@ -9,6 +9,9 @@ import '../model/image_resize_config.dart';
 
 class ResizerThread {
   static ImageResizeConfig config = ImageResizeConfig();
+
+  bool initFailed = false;
+
   Isolate? _isolate;
   final ReceivePort _receivePort = ReceivePort();
   SendPort? _sendPort;
@@ -16,13 +19,16 @@ class ResizerThread {
 
   ResizerThread();
 
-  Future<void> initIsolate() async {
+  Future<void> init() async {
     // Because isolate memery is indepedent, must copy config when init.
-    _isolate = await Isolate.spawn(initCommunication, [_receivePort.sendPort, config]);
+    _isolate = await Isolate.spawn(initIsolate, [_receivePort.sendPort, config]);
     Completer initCompleter = Completer();
     _receivePort.listen((message) {
       if (message is SendPort) {
         _sendPort = message;
+      } else if (message == 'initFailed') {
+        initFailed = true;
+      } else if (message == 'initEnd') {
         initCompleter.complete();
       } else {
         _completer?.complete(message);
@@ -44,12 +50,23 @@ class ResizerThread {
     return _completer!.future;
   }
 
-  static void initCommunication(List args) {
+  static void initIsolate(List args) {
     assert(args[0] is SendPort);
     assert(args[1] is ImageResizeConfig);
-    ReceivePort receivePort = ReceivePort();
     SendPort sendPort = args[0];
     config = args[1];
+
+    initCommunication(sendPort, config);
+
+    if (!NativeBridge().isInit) {
+      sendPort.send('initFailed');
+    }
+
+    sendPort.send('initEnd');
+  }
+
+  static void initCommunication(SendPort sendPort, ImageResizeConfig config) {
+    ReceivePort receivePort = ReceivePort();
     sendPort.send(receivePort.sendPort);
 
     receivePort.listen((message) async {
@@ -79,7 +96,7 @@ class ResizerThread {
     }
 
     var cConfig = config.toNativeStruct(file.path, newPath);
-    bool result = OpenCVBridge().reiszeImage(cConfig);
+    bool result = NativeBridge().reiszeImage(cConfig);
     calloc.free(cConfig);
 
     if (!result) {
