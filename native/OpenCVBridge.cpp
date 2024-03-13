@@ -163,7 +163,7 @@ bool checkNeedResize(cv::Mat image, Config *config) {
 std::vector<int> spawnWriteParams(Config *config) {
   std::vector<int> params;
   std::filesystem::path filePath(config->dst);
-  const char *ext = filePath.extension().c_str();
+  const char *ext = filePath.extension().string().c_str();
 
   if (ext == ".png") {
     params.push_back(cv::IMWRITE_PNG_COMPRESSION);
