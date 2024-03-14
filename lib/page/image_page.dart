@@ -94,8 +94,9 @@ class _ImagePageState extends State<ImagePage> {
       } else if (type == FileSystemEntityType.directory) {
         getDictionaryFile(xfile.path);
       }
-      setState(() {});
     }
+
+    setState(() {});
   }
 
   void getDictionaryFile(String path) {
