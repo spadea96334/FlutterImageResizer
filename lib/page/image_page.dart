@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:cross_file/cross_file.dart';
 import '../resizer/image_resizer.dart';
+import 'package:path/path.dart' as p;
 
 class ImagePage extends StatefulWidget {
   const ImagePage({super.key, required this.toOptionsPage});
@@ -90,7 +91,7 @@ class _ImagePageState extends State<ImagePage> {
     for (XFile xfile in details.files) {
       FileSystemEntityType type = FileSystemEntity.typeSync(xfile.path);
       if (type == FileSystemEntityType.file) {
-        _imageResizer.fileList.add(File(xfile.path));
+        addFileIfAccept(xfile.path);
       } else if (type == FileSystemEntityType.directory) {
         getDictionaryFile(xfile.path);
       }
@@ -99,13 +100,22 @@ class _ImagePageState extends State<ImagePage> {
     setState(() {});
   }
 
+  void addFileIfAccept(String path) {
+    const List<String> extList = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tif', 'tiff'];
+    String ext = p.extension(path);
+
+    if (extList.contains(ext)) {
+      _imageResizer.fileList.add(File(path));
+    }
+  }
+
   void getDictionaryFile(String path) {
     Directory directory = Directory(path);
     List<FileSystemEntity> entities = directory.listSync(recursive: true);
     for (FileSystemEntity entity in entities) {
       FileSystemEntityType type = FileSystemEntity.typeSync(entity.path);
       if (type == FileSystemEntityType.file) {
-        _imageResizer.fileList.add(File(entity.path));
+        addFileIfAccept(entity.path);
       } else if (type == FileSystemEntityType.directory) {
         getDictionaryFile(entity.path);
       }
