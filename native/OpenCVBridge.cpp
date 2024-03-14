@@ -10,7 +10,6 @@
 
 bool checkNeedResize(cv::Mat image, Config *config);
 cv::Size calSize(cv::Mat image, Config *config);
-void (*fPrint)(char *);
 cv::Mat readFile(Config *config);
 bool writeFile(cv::Mat image, Config *config);
 std::vector<int> spawnWriteParams(Config *config);
@@ -175,5 +174,3 @@ std::vector<int> spawnWriteParams(Config *config) {
 
   return params;
 }
-
-void initFPrint(void (*printCallback)(char *)) { fPrint = printCallback; }
