@@ -1,11 +1,21 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:image_resizer/utility/setting_manager.dart';
+import 'package:window_manager/window_manager.dart';
 import 'page/image_options_page.dart';
 import 'page/image_page.dart';
 import 'page/image_settings_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+
+  WindowOptions windowOptions =
+      const WindowOptions(size: Size(800, 700), center: true, backgroundColor: Colors.transparent);
+
+  windowManager.waitUntilReadyToShow(windowOptions, () async {
+    await windowManager.show();
+    await windowManager.focus();
+  });
   // load setting
   await SettingManager().loadSetting();
   runApp(const MyApp());
