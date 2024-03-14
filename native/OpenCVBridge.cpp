@@ -61,8 +61,8 @@ cv::Mat readFile(Config *config) {
   char *buff = new char[length];
   fseek(f, 0, SEEK_SET);
   fread(buff, 1, length, f);
-  cv::_InputArray array(buff, length);
-  cv::Mat mat = cv::imdecode(array, cv::IMREAD_UNCHANGED);
+  cv::Mat rawMat(1, length, CV_8UC1, buff);
+  cv::Mat mat = cv::imdecode(rawMat, cv::IMREAD_UNCHANGED);
 
   delete[] buff;
   fclose(f);
