@@ -101,7 +101,7 @@ class _ImagePageState extends State<ImagePage> {
   }
 
   void addFileIfAccept(String path) {
-    const List<String> extList = ['jpg', 'jpeg', 'png', 'webp', 'bmp', 'tif', 'tiff'];
+    const List<String> extList = ['.jpg', '.jpeg', '.png', '.webp', '.bmp', '.tif', '.tiff'];
     String ext = p.extension(path);
 
     if (extList.contains(ext)) {
