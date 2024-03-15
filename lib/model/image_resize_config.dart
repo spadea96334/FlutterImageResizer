@@ -119,7 +119,7 @@ class ImageResizeConfig {
   Map<String, dynamic> toJson() => _$ImageResizeConfigToJson(this);
 }
 
-class ImageResizeConfigC extends Struct {
+final class ImageResizeConfigC extends Struct {
   external Pointer<Utf8> file;
   external Pointer<Utf8> dst;
   // ignore: non_constant_identifier_names
