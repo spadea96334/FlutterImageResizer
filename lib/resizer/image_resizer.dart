@@ -10,17 +10,20 @@ class ImageResizer {
 
   List<File> fileList = [];
   ImageResizeConfig config = ImageResizeConfig();
-  EventNotifier configNotifier = EventNotifier();
-  EventNotifier progressNotifier = EventNotifier();
-  int processCount = 0;
+  EventNotifier get configNotifier => _configNotifier;
+  EventNotifier get progressNotifier => _progressNotifier;
+  int get processCount => _processCount;
   bool get initFailed => _initFailed;
   bool get processing => _processing;
   int threadCount = Platform.numberOfProcessors;
 
   final List<ResizerThread> _idleThreads = [];
+  final EventNotifier _configNotifier = EventNotifier();
+  final EventNotifier _progressNotifier = EventNotifier();
   Completer<void>? _idleThreadCompleter;
   bool _processing = false;
   bool _initFailed = false;
+  int _processCount = 0;
 
   ImageResizer._private();
 
@@ -77,7 +80,7 @@ class ImageResizer {
 
     _initFailed = false;
     _processing = true;
-    processCount = 0;
+    _processCount = 0;
 
     if (!await initThread(threadCount)) {
       _initFailed = true;
@@ -92,12 +95,12 @@ class ImageResizer {
       File file = fileList[i];
       ResizerThread thread = await getIdleThread();
       thread.resize(file).then((value) {
-        processCount++;
+        _processCount++;
         progressNotifier.emit();
         _idleThreads.add(thread);
         _idleThreadCompleter?.complete();
 
-        if (processCount == fileList.length) {
+        if (_processCount == fileList.length) {
           _processing = false;
           _idleThreads.clear();
         }
