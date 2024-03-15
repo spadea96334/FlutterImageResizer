@@ -9,6 +9,7 @@ class ImageResizer {
   static final ImageResizer _singleton = ImageResizer._private();
 
   List<File> fileList = [];
+  List<(bool, File)> get finishedFileList => _finishedFileList;
   ImageResizeConfig config = ImageResizeConfig();
   EventNotifier get configNotifier => _configNotifier;
   EventNotifier get progressNotifier => _progressNotifier;
@@ -20,6 +21,7 @@ class ImageResizer {
   final List<ResizerThread> _idleThreads = [];
   final EventNotifier _configNotifier = EventNotifier();
   final EventNotifier _progressNotifier = EventNotifier();
+  final List<(bool, File)> _finishedFileList = [];
   Completer<void>? _idleThreadCompleter;
   bool _processing = false;
   bool _initFailed = false;
@@ -78,6 +80,7 @@ class ImageResizer {
       return;
     }
 
+    _finishedFileList.clear();
     _initFailed = false;
     _processing = true;
     _processCount = 0;
@@ -95,6 +98,7 @@ class ImageResizer {
       File file = fileList[i];
       ResizerThread thread = await getIdleThread();
       thread.resize(file).then((value) {
+        _finishedFileList.add((value, file));
         _processCount++;
         progressNotifier.emit();
         _idleThreads.add(thread);

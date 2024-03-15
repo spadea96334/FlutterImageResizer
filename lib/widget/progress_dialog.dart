@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
 import '../resizer/image_resizer.dart';
 
 class ProgressDialog extends StatelessWidget {
@@ -44,8 +46,26 @@ class ProgressDialog extends StatelessWidget {
                                 Navigator.pop(context);
                               },
                               child: const Text('Close', style: TextStyle(color: Colors.black)))
-                        ])
+                        ]),
+                        Container(
+                            constraints: const BoxConstraints(maxHeight: 100),
+                            color: Colors.white30,
+                            child: ListView.separated(
+                                itemCount: _imageResizer.finishedFileList.length,
+                                separatorBuilder: listViewSeparatorBuilder,
+                                itemBuilder: listViewBuilder))
                       ]);
                 })));
+  }
+
+  Widget listViewSeparatorBuilder(context, index) {
+    return const Divider(height: 0, color: Colors.black);
+  }
+
+  Widget listViewBuilder(context, index) {
+    String result = _imageResizer.finishedFileList[index].$1 ? 'Success' : 'Failed ';
+    String path = _imageResizer.finishedFileList[index].$2.path;
+
+    return Text('$result:$path', overflow: TextOverflow.ellipsis);
   }
 }
