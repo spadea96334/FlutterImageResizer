@@ -312,15 +312,15 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     }
 
     if (_imageResizer.fileList.isEmpty) {
-      print('no file');
-      // TODO: show error toast
+      showAlert('No image selected');
+
       return false;
     }
 
     if ((_imageResizer.config.width == 0 && !_imageResizer.config.widthAuto) ||
         (_imageResizer.config.height == 0 && !_imageResizer.config.heightAuto)) {
-      print('error size');
-      // TODO: show error toast
+      showAlert('Size settings incorrect');
+
       return false;
     }
 
@@ -333,11 +333,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
     }
 
     if (_imageResizer.processing) {
-      showDialog(
-          context: context,
-          builder: (context) {
-            return const Dialog(child: Text('Alerdy processing'));
-          });
+      showAlert('Alerdy processing');
 
       return;
     }
@@ -349,6 +345,32 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
         });
 
     _imageResizer.resize();
+  }
+
+  void showAlert(String message) {
+    showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) {
+          return Dialog(
+              child: Container(
+                  constraints: const BoxConstraints(maxWidth: 500),
+                  child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Padding(padding: const EdgeInsets.only(top: 15, left: 5), child: Text(message)),
+                        Row(children: [
+                          const Expanded(child: SizedBox()),
+                          TextButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: const Text('Close'))
+                        ])
+                      ])));
+        });
   }
 
   Future<void> iconButtonOnPressed() async {
@@ -390,7 +412,8 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
   void deleteProfile() {
     if (_profileManager.profiles.length == 1) {
-      // TODO: show tips
+      showAlert('Must exist at least one profile');
+
       return;
     }
 
