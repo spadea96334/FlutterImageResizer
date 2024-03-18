@@ -64,7 +64,6 @@ class ImageResizer {
   }
 
   void checkDestinationPath() {
-    // TODO: show error when dst is empty
     Directory dst = Directory(config.destination);
     if (!dst.existsSync()) {
       dst.createSync(recursive: true);
