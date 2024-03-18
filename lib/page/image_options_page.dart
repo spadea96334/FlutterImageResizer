@@ -340,6 +340,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
 
     showDialog(
         context: context,
+        barrierDismissible: false,
         builder: (context) {
           return ProgressDialog();
         });
