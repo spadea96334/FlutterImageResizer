@@ -97,6 +97,7 @@ class ImageResizer {
     for (int i = 0; i < fileList.length; i++) {
       File file = fileList[i];
       ResizerThread thread = await getIdleThread();
+
       thread.resize(file).then((value) {
         _finishedFileList.add((value, file));
         _processCount++;
@@ -106,10 +107,18 @@ class ImageResizer {
 
         if (_processCount == fileList.length) {
           _processing = false;
-          _idleThreads.clear();
+          killThreads();
         }
       });
     }
+  }
+
+  void killThreads() {
+    for (var thread in _idleThreads) {
+      thread.kill();
+    }
+
+    _idleThreads.clear();
   }
 
   Future<ResizerThread> getIdleThread() async {

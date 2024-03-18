@@ -39,6 +39,10 @@ class ResizerThread {
     return initCompleter.future;
   }
 
+  void kill() {
+    _isolate?.kill();
+  }
+
   Future<bool> resize(File file) async {
     while (_isolate == null || _sendPort == null || _completer != null) {
       await Future.delayed(const Duration(milliseconds: 500));
