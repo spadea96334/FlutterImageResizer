@@ -49,7 +49,7 @@ class ProgressDialog extends StatelessWidget {
                             constraints: const BoxConstraints(maxHeight: 100),
                             color: Colors.white30,
                             child: ListView.separated(
-                                itemCount: _imageResizer.finishedFileList.length,
+                                itemCount: _imageResizer.failedFileList.length,
                                 separatorBuilder: listViewSeparatorBuilder,
                                 itemBuilder: listViewBuilder))
                       ]);
@@ -61,9 +61,8 @@ class ProgressDialog extends StatelessWidget {
   }
 
   Widget listViewBuilder(context, index) {
-    String result = _imageResizer.finishedFileList[index].$1 ? 'Success' : 'Failed ';
-    String path = _imageResizer.finishedFileList[index].$2.path;
+    String path = _imageResizer.failedFileList[index].path;
 
-    return Text('$result:$path', overflow: TextOverflow.ellipsis);
+    return Text('Failed:$path', overflow: TextOverflow.ellipsis);
   }
 }
