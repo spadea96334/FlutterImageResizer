@@ -354,23 +354,23 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
         barrierDismissible: false,
         builder: (context) {
           return Dialog(
-              child: Container(
-                  constraints: const BoxConstraints(maxWidth: 500),
+              shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
+              child: IntrinsicWidth(
                   child: Column(
                       mainAxisSize: MainAxisSize.min,
                       mainAxisAlignment: MainAxisAlignment.center,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        Padding(padding: const EdgeInsets.only(top: 15, left: 5), child: Text(message)),
-                        Row(children: [
-                          const Expanded(child: SizedBox()),
-                          TextButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Close'))
-                        ])
-                      ])));
+                    Padding(padding: const EdgeInsets.only(top: 15, left: 5), child: Text(message)),
+                    Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
+                      Expanded(child: SizedBox()),
+                      TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Close'))
+                    ])
+                  ])));
         });
   }
 
