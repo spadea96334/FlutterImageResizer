@@ -116,8 +116,6 @@ class _ImagePageState extends State<ImagePage> {
       FileSystemEntityType type = FileSystemEntity.typeSync(entity.path);
       if (type == FileSystemEntityType.file) {
         addFileIfAccept(entity.path);
-      } else if (type == FileSystemEntityType.directory) {
-        getDictionaryFile(entity.path);
       }
     }
   }
