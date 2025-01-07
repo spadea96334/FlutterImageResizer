@@ -29,9 +29,9 @@ class _ImagePageState extends State<ImagePage> {
                 padding: const EdgeInsets.only(top: 14, bottom: 10, right: 10),
                 child: TextButton(
                     style: const ButtonStyle(
-                        foregroundColor: MaterialStatePropertyAll(Colors.black87),
-                        backgroundColor: MaterialStatePropertyAll(Colors.white),
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        foregroundColor: WidgetStatePropertyAll(Colors.black87),
+                        backgroundColor: WidgetStatePropertyAll(Colors.white),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                             side: BorderSide(color: Colors.black45),
                             borderRadius: BorderRadius.all(Radius.circular(15))))),
                     onPressed: clearButtonPressed,
@@ -56,9 +56,9 @@ class _ImagePageState extends State<ImagePage> {
                 child: TextButton(
                     onPressed: nextButtonPressed,
                     style: const ButtonStyle(
-                        foregroundColor: MaterialStatePropertyAll(Colors.black87),
-                        backgroundColor: MaterialStatePropertyAll(Colors.white),
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        foregroundColor: WidgetStatePropertyAll(Colors.black87),
+                        backgroundColor: WidgetStatePropertyAll(Colors.white),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                             side: BorderSide(color: Colors.black45),
                             borderRadius: BorderRadius.all(Radius.circular(15))))),
                     child: const Text('Next')))

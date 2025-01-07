@@ -257,9 +257,9 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                 child: TextButton(
                     onPressed: resizeButtonPressed,
                     style: const ButtonStyle(
-                        foregroundColor: MaterialStatePropertyAll(Colors.black87),
-                        backgroundColor: MaterialStatePropertyAll(Colors.white),
-                        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                        foregroundColor: WidgetStatePropertyAll(Colors.black87),
+                        backgroundColor: WidgetStatePropertyAll(Colors.white),
+                        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
                             side: BorderSide(color: Colors.black45),
                             borderRadius: BorderRadius.all(Radius.circular(15))))),
                     child: const Text('Go')))
@@ -363,7 +363,7 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
                       children: [
                     Padding(padding: const EdgeInsets.only(top: 15, left: 5), child: Text(message)),
                     Row(mainAxisSize: MainAxisSize.min, crossAxisAlignment: CrossAxisAlignment.end, children: [
-                      Expanded(child: SizedBox()),
+                      const Expanded(child: SizedBox()),
                       TextButton(
                           onPressed: () {
                             Navigator.pop(context);
