@@ -90,7 +90,7 @@ class ResizerThread {
     String newPath = '';
 
     if (config.imageFormat != ImageFormat.origin) {
-      baseName = p.setExtension(baseName, ".${config.imageFormat.extension}");
+      baseName = p.setExtension(baseName, '.${config.imageFormat.extension}');
     }
 
     if (config.target == FileTarget.origin) {
