@@ -23,10 +23,10 @@ bool resizeImage(Config *config) {
     return false;
   }
 
-  cv::Size size = calSize(image, config);
-
   if (checkNeedResize(image, config)) {
+    cv::Size size = calSize(image, config);
     cv::Mat resizedImage;
+
     if (config->unit == pixel) {
       cv::resize(image, resizedImage, size, 0, 0, config->filter);
     } else {
