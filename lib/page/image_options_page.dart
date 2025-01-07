@@ -404,10 +404,11 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           return ProfileNameInputDialog(onFinished: (value) {
             ImageResizeConfig config = _imageResizer.config.copy();
             config.name = value;
+            _imageResizer.config = config;
             _profileManager.profiles.add(config);
             _currentProfileIndex = _profileManager.profiles.length - 1;
             _profileManager.saveProfile().then((value) {
-              Navigator.pop(context);
+              if (context.mounted) Navigator.pop(context);
               setState(() {});
             });
           });
