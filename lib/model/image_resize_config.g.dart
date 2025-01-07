@@ -23,16 +23,17 @@ ImageResizeConfig _$ImageResizeConfigFromJson(Map<String, dynamic> json) =>
       ..name = json['name'] as String
       ..destination = json['destination'] as String
       ..unit = $enumDecode(_$SizeUnitEnumMap, json['unit'])
-      ..height = json['height'] as int
-      ..width = json['width'] as int
+      ..height = (json['height'] as num).toInt()
+      ..width = (json['width'] as num).toInt()
       ..imageFormat = $enumDecode(_$ImageFormatEnumMap, json['imageFormat'])
       ..filter = $enumDecode(_$InterpolationEnumMap, json['filter'])
-      ..jpgQuality = json['jpgQuality'] as int
-      ..pngCompression = json['pngCompression'] as int
+      ..jpgQuality = (json['jpgQuality'] as num).toInt()
+      ..pngCompression = (json['pngCompression'] as num).toInt()
       ..policy = $enumDecode(_$ResizePolicyEnumMap, json['policy'])
       ..target = $enumDecode(_$FileTargetEnumMap, json['target'])
       ..widthAuto = json['widthAuto'] as bool
-      ..heightAuto = json['heightAuto'] as bool;
+      ..heightAuto = json['heightAuto'] as bool
+      ..convertWebpToPng = json['convertWebpToPng'] as bool;
 
 Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
     <String, dynamic>{
@@ -49,6 +50,7 @@ Map<String, dynamic> _$ImageResizeConfigToJson(ImageResizeConfig instance) =>
       'target': _$FileTargetEnumMap[instance.target]!,
       'widthAuto': instance.widthAuto,
       'heightAuto': instance.heightAuto,
+      'convertWebpToPng': instance.convertWebpToPng,
     };
 
 const _$SizeUnitEnumMap = {

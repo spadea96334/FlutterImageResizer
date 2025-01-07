@@ -34,6 +34,8 @@ bool resizeImage(Config *config) {
     }
 
     image = resizedImage;
+  } else if (!config->force) {
+    return true;
   }
 
   return writeFile(image, config);

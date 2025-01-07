@@ -186,18 +186,27 @@ class _ImageOptionsPageState extends State<ImageOptionsPage> {
           ]),
           const Padding(padding: EdgeInsets.only(left: 5), child: Text('File', style: TextStyle(fontSize: 16))),
           const Padding(padding: EdgeInsets.only(left: 5, right: 5), child: Divider(height: 1, color: Colors.black54)),
-          OptionDropdownWidget<ImageFormat>(
-              title: 'Format:',
-              value: _imageResizer.config.imageFormat,
-              items: _formatItems,
-              onChanged: (value) {
-                if (value == null) {
-                  return;
-                }
+          Row(children: [
+            OptionDropdownWidget<ImageFormat>(
+                title: 'Format:',
+                value: _imageResizer.config.imageFormat,
+                items: _formatItems,
+                onChanged: (value) {
+                  if (value == null) {
+                    return;
+                  }
 
-                _imageResizer.config.imageFormat = value;
-                setState(() {});
-              }),
+                  _imageResizer.config.imageFormat = value;
+                  setState(() {});
+                }),
+            Checkbox(
+                value: _imageResizer.config.convertWebpToPng,
+                onChanged: (value) {
+                  _imageResizer.config.convertWebpToPng = value!;
+                  setState(() {});
+                }),
+            const Text('Convert webp to png')
+          ]),
           OptionInputWidget(
               title: 'Jpg quality',
               unitLabel: '%',

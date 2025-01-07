@@ -73,6 +73,7 @@ class ImageResizeConfig {
   FileTarget target = FileTarget.create;
   bool widthAuto = false;
   bool heightAuto = false;
+  bool convertWebpToPng = false;
 
   ImageResizeConfig() {
     destination = SettingManager().documentsPath;
@@ -92,7 +93,8 @@ class ImageResizeConfig {
       ..policy = policy
       ..target = target
       ..widthAuto = widthAuto
-      ..heightAuto = heightAuto;
+      ..heightAuto = heightAuto
+      ..convertWebpToPng = convertWebpToPng;
 
     return config;
   }
@@ -111,6 +113,7 @@ class ImageResizeConfig {
     struct.ref.file_utf16 = file.toNativeUtf16();
     struct.ref.dst_utf16 = dst.toNativeUtf16();
     struct.ref.policy = policy.value;
+    struct.ref.force = false;
 
     return struct;
   }
@@ -140,4 +143,6 @@ final class ImageResizeConfigC extends Struct {
   external int pngCompression;
   @Int()
   external int policy;
+  @Bool()
+  external bool force;
 }

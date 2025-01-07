@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 import 'package:ffi/ffi.dart';
@@ -88,8 +89,12 @@ class ResizerThread {
     String dir = p.dirname(file.path);
     String baseName = p.basename(file.path);
     String newPath = '';
+    bool needForce = false;
 
-    if (config.imageFormat != ImageFormat.origin) {
+    if (config.convertWebpToPng && p.extension(baseName) == '.webp') {
+      baseName = p.setExtension(baseName, '.${ImageFormat.png.extension}');
+      needForce = true;
+    } else if (config.imageFormat != ImageFormat.origin) {
       baseName = p.setExtension(baseName, '.${config.imageFormat.extension}');
     }
 
@@ -100,6 +105,11 @@ class ResizerThread {
     }
 
     var cConfig = config.toNativeStruct(file.path, newPath);
+
+    if (needForce) {
+      cConfig.ref.force = true;
+    }
+
     bool result = NativeBridge().reiszeImage(cConfig);
     calloc.free(cConfig);
 

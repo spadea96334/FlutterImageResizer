@@ -22,6 +22,7 @@ struct Config {
   int jpgQuality;
   int pngCompression;
   int policy;
+  bool force;
 };
 
 // EXPORT bool resizeImage(char *path, char *dst, int width, int height, double scaleX, double scaleY, int interpolation);
