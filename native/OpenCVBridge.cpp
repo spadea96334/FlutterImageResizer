@@ -13,6 +13,7 @@ cv::Size calSize(cv::Mat image, Config *config);
 cv::Mat readFile(Config *config);
 bool writeFile(cv::Mat image, Config *config);
 std::vector<int> spawnWriteParams(Config *config);
+std::wstring convertToUTF16(const char *utf8Str);
 
 bool resizeImage(Config *config) {
   cv::Mat image;
@@ -52,7 +53,7 @@ cv::Mat readFile(Config *config) {
     return cvReadFile(config);
   }
 
-  FILE *f = _wfopen(config->file_utf16, L"rb");
+  FILE *f = _wfopen(convertToUTF16(config->file).c_str(), L"rb");
   if (f == NULL) {
     return cv::Mat();
   }
@@ -88,12 +89,14 @@ bool writeFile(cv::Mat image, Config *config) {
   }
 
   std::vector<uchar> encode;
-  std::filesystem::path filePath(config->dst_utf16);
+  std::filesystem::path filePath(convertToUTF16(config->dst).c_str());
   std::vector<int> params = spawnWriteParams(config);
-
   cv::imencode(filePath.extension().string().c_str(), image, encode, params);
-  FILE *f = _wfopen(config->dst_utf16, L"wb");
-
+  std::wstring utf16Dst = convertToUTF16(config->dst);
+  if (utf16Dst.empty()) {
+    return false;
+  }
+  FILE *f = _wfopen(utf16Dst.c_str(), L"wb");
   if (f == NULL) {
     return false;
   }
@@ -163,9 +166,13 @@ bool checkNeedResize(cv::Mat image, Config *config) {
 
 std::vector<int> spawnWriteParams(Config *config) {
   std::vector<int> params;
-  std::filesystem::path filePath(config->dst);
-  const char *ext = filePath.extension().string().c_str();
+  std::wstring utf16Dst = convertToUTF16(config->dst);
+  if (utf16Dst.empty()) {
+    return params;
+  }
 
+  std::filesystem::path filePath(utf16Dst);
+  const char *ext = filePath.extension().string().c_str();
   if (ext == ".png") {
     params.push_back(cv::IMWRITE_PNG_COMPRESSION);
     params.push_back(config->pngCompression);
@@ -175,4 +182,16 @@ std::vector<int> spawnWriteParams(Config *config) {
   }
 
   return params;
+}
+
+std::wstring convertToUTF16(const char *utf8Str) {
+  int utf16Length = MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, NULL, 0);
+  if (utf16Length == 0) {
+    std::cerr << "Failed to convert UTF-8 to UTF-16." << std::endl;
+    return L"";
+  }
+
+  std::wstring utf16Str(utf16Length, L'\0');
+  MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, &utf16Str[0], utf16Length);
+  return utf16Str;
 }

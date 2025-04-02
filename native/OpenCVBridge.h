@@ -13,8 +13,6 @@ enum sizeUnit { pixel, scale };
 struct Config {
   char *file;
   char *dst;
-  wchar_t *file_utf16;
-  wchar_t *dst_utf16;
   sizeUnit unit;
   int width;
   int height;

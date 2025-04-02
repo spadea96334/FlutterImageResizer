@@ -110,8 +110,6 @@ class ImageResizeConfig {
     struct.ref.pngCompression = pngCompression;
     struct.ref.file = file.toNativeUtf8();
     struct.ref.dst = dst.toNativeUtf8();
-    struct.ref.file_utf16 = file.toNativeUtf16();
-    struct.ref.dst_utf16 = dst.toNativeUtf16();
     struct.ref.policy = policy.value;
     struct.ref.force = false;
 
@@ -125,10 +123,6 @@ class ImageResizeConfig {
 final class ImageResizeConfigC extends Struct {
   external Pointer<Utf8> file;
   external Pointer<Utf8> dst;
-  // ignore: non_constant_identifier_names
-  external Pointer<Utf16> file_utf16;
-  // ignore: non_constant_identifier_names
-  external Pointer<Utf16> dst_utf16;
   @Int()
   external int unit;
   @Int()
