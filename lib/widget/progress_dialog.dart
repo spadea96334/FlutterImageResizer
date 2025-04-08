@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:image_resizer/widget/scroll_table.dart';
 import '../resizer/image_resizer.dart';
 
 class ProgressDialog extends StatelessWidget {
@@ -11,7 +12,7 @@ class ProgressDialog extends StatelessWidget {
     return Dialog(
         shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(10))),
         child: Container(
-            width: 500,
+            width: 600,
             padding: const EdgeInsets.all(16),
             child: ListenableBuilder(
                 listenable: _imageResizer.progressNotifier,
@@ -47,23 +48,28 @@ class ProgressDialog extends StatelessWidget {
                               child: const Text('Close', style: TextStyle(color: Colors.black)))
                         ]),
                         Container(
-                            constraints: const BoxConstraints(maxHeight: 100),
+                            constraints: const BoxConstraints(minHeight: 100, maxHeight: 100),
+                            width: 568,
                             color: Colors.white30,
-                            child: ListView.separated(
-                                itemCount: _imageResizer.failedFileList.length,
-                                separatorBuilder: listViewSeparatorBuilder,
-                                itemBuilder: listViewBuilder))
+                            child: ScrollTable(width: 568, children: _generateDataRows()))
                       ]);
                 })));
   }
 
-  Widget listViewSeparatorBuilder(context, index) {
-    return const Divider(height: 0, color: Colors.black);
-  }
+  List<TableRow> _generateDataRows() {
+    List<TableRow> rows = [];
+    double rowSpacing = 20;
 
-  Widget listViewBuilder(context, index) {
-    String path = _imageResizer.failedFileList[index].path;
+    rows.add(TableRow(decoration: BoxDecoration(color: Colors.grey[400]), children: [
+      TableCell(child: Row(spacing: rowSpacing, children: [const Text('Status'), const Text('Path')]))
+    ]));
 
-    return Text('Failed:$path', overflow: TextOverflow.ellipsis);
+    for (var file in _imageResizer.failedFileList) {
+      rows.add(TableRow(children: [
+        TableCell(child: Row(spacing: rowSpacing, children: [Text('Failed'), Text(file.path)]))
+      ]));
+    }
+
+    return rows;
   }
 }
