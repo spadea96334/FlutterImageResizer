@@ -13,7 +13,9 @@ cv::Size calSize(cv::Mat image, Config *config);
 cv::Mat readFile(Config *config);
 bool writeFile(cv::Mat image, Config *config);
 std::vector<int> spawnWriteParams(Config *config);
+#ifdef _WIN32
 std::wstring convertToUTF16(const char *utf8Str);
+#endif
 
 bool resizeImage(Config *config) {
   cv::Mat image;
@@ -166,13 +168,13 @@ bool checkNeedResize(cv::Mat image, Config *config) {
 
 std::vector<int> spawnWriteParams(Config *config) {
   std::vector<int> params;
-  std::wstring utf16Dst = convertToUTF16(config->dst);
-  if (utf16Dst.empty()) {
-    return params;
-  }
-
-  std::filesystem::path filePath(utf16Dst);
+#ifdef _WIN32
+  std::filesystem::path filePath(convertToUTF16(config->dst).c_str());
+#else
+  std::filesystem::path filePath(config->dst);
+#endif
   const char *ext = filePath.extension().string().c_str();
+
   if (ext == ".png") {
     params.push_back(cv::IMWRITE_PNG_COMPRESSION);
     params.push_back(config->pngCompression);
@@ -184,6 +186,7 @@ std::vector<int> spawnWriteParams(Config *config) {
   return params;
 }
 
+#ifdef _WIN32
 std::wstring convertToUTF16(const char *utf8Str) {
   int utf16Length = MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, NULL, 0);
   if (utf16Length == 0) {
@@ -195,3 +198,4 @@ std::wstring convertToUTF16(const char *utf8Str) {
   MultiByteToWideChar(CP_UTF8, 0, utf8Str, -1, &utf16Str[0], utf16Length);
   return utf16Str;
 }
+#endif
